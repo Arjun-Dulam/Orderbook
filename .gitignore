@@ -1,0 +1,4 @@
+*.xml
+.idea/*
+build/
+dev_notes.txt

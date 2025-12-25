@@ -5,6 +5,6 @@ project(StockExchange VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SOURCE main.cpp order.hpp)
+set(SOURCE main.cpp test.cpp)
 
 add_executable(StockExchange ${SOURCE})
