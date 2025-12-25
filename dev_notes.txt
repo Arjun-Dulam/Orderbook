@@ -1,9 +1,0 @@
-12/25/2025
-
-- I was thinking "should i restrict this to stocks only or also include commodities?" cuz i gotta
-account for negative prices like that time in 2020 when oil went negative. For this, is it better to use a 
-one bit attrivute for price negtativeness or just use int32? i dont want to massively cut down on my price range
-by using 2s complement just for the rare chance of negative prices (which rarely happen anyway). on the other hand, 
-int32 still has a very good range for prices. eh, ill just go with int32 and change it later if i have price issues
-
-- 
