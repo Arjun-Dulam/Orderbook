@@ -5,6 +5,12 @@ project(StockExchange VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SOURCE test.cpp orderbook.cpp orderbook.hpp order.hpp)
+include_directories(include)
+
+set(SOURCE
+    tests/test.cpp
+    src/orderbook.cpp
+    src/order.cpp
+)
 
 add_executable(StockExchange ${SOURCE})

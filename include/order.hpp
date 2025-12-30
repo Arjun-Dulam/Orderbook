@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <cstdint>
+
 enum Side {
     Buy,
     Sell
@@ -23,10 +26,4 @@ struct Trade {
     uint32_t sell_order_id;
 };
 
-std::string side_to_string(const Side side) {
-    if (side == Side::Buy) {
-        return "Buy";
-    } else {
-        return "Sell";
-    }
-};
+std::string side_to_string(const Side side);

@@ -3,15 +3,19 @@
 #include "orderbook.hpp"
 
 int main() {
-    Order new_order = Order{1, Buy, 10, 10, 1};
-    Order other_order = Order{2, Sell, 100, 100, 20};
+    OrderBook book;
 
-    std::cout << new_order.order_id << side_to_string(new_order.side) << new_order.price << new_order.quantity << new_order.timestamp << '\n';
-    std::cout << other_order.order_id << side_to_string(other_order.side) << other_order.price << other_order.quantity << other_order.timestamp << '\n';
+    Order buy_order{1, Buy, 10050, 100, 0};
+    Order sell_order{2, Sell, 10100, 50, 0};
 
-    Trade new_trade = Trade{1, 100, 100, new_order.order_id, other_order.order_id};
+    auto trades = book.add_order(buy_order);
+    std::cout << "Trades from buy order: " << trades.size() << std::endl;
 
-    std::cout << new_trade.trade_id << new_trade.price << new_trade.quantity << new_trade.buy_order_id << new_trade.sell_order_id << '\n';
+    trades = book.add_order(sell_order);
+    std::cout << "Trades from sell order: " << trades.size() << std::endl;
+
+    auto all_trades = book.show_trades();
+    std::cout << "Total trades: " << all_trades.size() << std::endl;
+
     return 0;
-};
-
+}
