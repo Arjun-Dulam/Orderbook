@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <cstdint>
+#include <cstddef>
 
 #include "order.hpp"
 
@@ -25,9 +26,11 @@ public:
 
     /**
      * @brief Adds order to order book, executes and returns possible trades
-     * @param order Address of new order to be added to oderbook
+     * @param order Address of new order to be added to orderbook
      * @return Vector containing trades executed upon new order addition
      */
+    std::vector<Trade> add_order(const Order &order);
+
 
     /**
      * @brief Scans and removes order if it exists
