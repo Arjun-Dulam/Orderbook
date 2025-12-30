@@ -9,13 +9,13 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
     return {};
 }
 
-bool remove_order(const uint32_t order_id) {
+bool OrderBook::remove_order(const uint32_t order_id) {
     // TODO
     return false;
 }
 
-std::vector<Trade> show_trades() {
-    return
+std::vector<Trade> OrderBook::show_trades() {
+    return trades;
 }
 
 
