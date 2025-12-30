@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 enum Side {
     Buy,
@@ -9,7 +8,9 @@ enum Side {
 struct Order {
     uint32_t order_id;
     Side side;
-    int32_t price; // Price is stored as cents, choosing to have two decimal places of precision.
+    int32_t price;
+    // Price is stored as cents, choosing to have two decimal places of precision.
+    // Using signed int to accommodate negative prices for commodities such as what happened to oil in 2020.
     uint32_t quantity;
     uint64_t timestamp;
 };
@@ -22,7 +23,7 @@ struct Trade {
     uint32_t sell_order_id;
 };
 
-std::string side_to_string(Side side) {
+std::string side_to_string(const Side side) {
     if (side == Side::Buy) {
         return "Buy";
     } else {
