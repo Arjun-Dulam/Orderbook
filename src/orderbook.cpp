@@ -37,27 +37,30 @@ void OrderBook::init_trades_with_order(const Order *order, std::vector<Trade> *e
     int32_t optimal_existing_price = get_optimal_price(bids, asks, order->side);
     bool trade_possible;
 
+    Order oldest_bid = std::prev(bids.end())->second[0];
+    Order oldest_ask = asks.begin()->second[0];
+    Order existing_order = (order->side == Side::Buy) ? oldest_ask : oldest_bid;
+
     if (order->side == Side::Buy) {
         trade_possible = optimal_existing_price <= order->price;
     } else {
         trade_possible = optimal_existing_price >= order->price;
     }
 
-    if (trade_possible) {
-        Order oldest_bid = std::prev(bids.end())->second[0];
-        Order oldest_ask = asks.begin()->second[0];
-        Order existing_order = (order->side == Side::Buy) ? oldest_ask : oldest_bid;
+    trade_possible = trade_possible && (order->quantity == existing_order.quantity);
 
+    if (trade_possible) {
         Trade new_trade {
             next_trade_id++,
-            (order->side == Side::Sell) ? order->price : existing_order.price,
-            existing_order.quantity,
+            optimal_existing_price,
             (order->side == Side::Buy) ? order->order_id : existing_order.order_id,
             (order->side == Side::Sell) ? order->order_id : existing_order.order_id,
         };
 
         trades.push_back(new_trade);
         executed_trades->push_back(new_trade);
+
+        std::erase()
     }
 }
 
