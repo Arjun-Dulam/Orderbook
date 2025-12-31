@@ -11,7 +11,7 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
     new_order.timestamp = next_timestamp++;
     std::vector<Trade> executed_trades;
 
-    executed_trades = init_trades_with_order(&new_order, &executed_trades);
+    init_trades_with_order(&new_order, &executed_trades);
 
     if (new_order.quantity == 0) {
         return executed_trades;
@@ -33,7 +33,7 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
     order_lookup[new_order.order_id] = order_location;
 }
 
-std::vector<Trade> OrderBook::init_trades_with_order(const Order *order, std::vector<Trade> *executed_trades) {
+void OrderBook::init_trades_with_order(const Order *order, std::vector<Trade> *executed_trades) {
     int32_t optimal_existing_price = get_optimal_price(bids, asks, order->side);
     bool trade_possible;
 
@@ -57,11 +57,8 @@ std::vector<Trade> OrderBook::init_trades_with_order(const Order *order, std::ve
         };
 
         trades.push_back(new_trade);
-
         executed_trades->push_back(new_trade);
     }
-
-    return executed_trades;
 }
 
 bool OrderBook::remove_order(const uint32_t order_id) {

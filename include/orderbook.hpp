@@ -34,12 +34,11 @@ public:
     std::vector<Trade> add_order(const Order &order);
 
     /**
-     * @brief Executes possible trades given the addition of a new order
+     * @brief Executes possible trades given the addition of a new order. Modifies executed_trades in place.
      * @param order Order that has recently been added
      * @param executed_trades Pointer to modifiable vector
-     * @return Modified executed_trades vector containing executed trades
      */
-    std::vector<Trade> init_trades_with_order(const Order *order, std::vector<Trade> *executed_trades);
+    void init_trades_with_order(const Order *order, std::vector<Trade> *executed_trades);
 
 
     /**
