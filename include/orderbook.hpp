@@ -38,7 +38,7 @@ public:
      * @param order Order that has recently been added
      * @param executed_trades Pointer to modifiable vector
      */
-    void init_trades_with_order(const Order *order, std::vector<Trade> *executed_trades);
+    void init_trades_with_order(Order *order, std::vector<Trade> *executed_trades);
 
 
     /**
@@ -46,7 +46,7 @@ public:
      * @param order_id order_id
      * @return True if order found and removed, false if order not found
      */
-    bool remove_order(const uint32_t order_id);
+    bool remove_order(uint32_t order_id);
 
     /**
      * @brief Shows executed trades
@@ -54,11 +54,5 @@ public:
      */
     std::vector<Trade> show_trades();
 
-    /**
-     * @brief Gets the optimal price for the corresponding side
-     * @param map Map from which to obtain price
-     * @param side Choosing which is the optimal value, greatest or smallest?
-     * @return Lowest price if side is buy, highest price if side is sell
-     */
-    int32_t get_optimal_price(const std::map<int32_t, std::vector<Order>> &bids, const std::map<int32_t, std::vector<Order>> &asks, Side side);
+
 };

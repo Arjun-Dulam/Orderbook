@@ -1,5 +1,7 @@
 #include "orderbook.hpp"
 
+#include <signal.h>
+
 OrderBook::OrderBook() {
     next_timestamp = 0;
     next_trade_id = 0;
@@ -33,13 +35,25 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
     order_lookup[new_order.order_id] = order_location;
 }
 
-void OrderBook::init_trades_with_order(const Order *order, std::vector<Trade> *executed_trades) {
-    int32_t optimal_existing_price = get_optimal_price(bids, asks, order->side);
-    bool trade_possible;
+void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *executed_trades) {
+    if (order->side == Side::Buy && asks.empty()) {
+        return;
+    } else if (order->side == Side::Sell && bids.empty()) {
+        return;
+    }
 
-    Order oldest_bid = std::prev(bids.end())->second[0];
-    Order oldest_ask = asks.begin()->second[0];
-    Order existing_order = (order->side == Side::Buy) ? oldest_ask : oldest_bid;
+    int32_t optimal_existing_price;
+    Order existing_order;
+
+    if (order->side == Side::Buy) {
+        optimal_existing_price = asks.begin()->first;
+        existing_order = asks.begin()->second[0];
+    } else {
+        optimal_existing_price = std::prev(bids.end())->first;
+        existing_order = std::prev(bids.end())->second[0];
+    }
+
+    bool trade_possible;
 
     if (order->side == Side::Buy) {
         trade_possible = optimal_existing_price <= order->price;
@@ -53,6 +67,7 @@ void OrderBook::init_trades_with_order(const Order *order, std::vector<Trade> *e
         Trade new_trade {
             next_trade_id++,
             optimal_existing_price,
+            existing_order.quantity,
             (order->side == Side::Buy) ? order->order_id : existing_order.order_id,
             (order->side == Side::Sell) ? order->order_id : existing_order.order_id,
         };
@@ -60,23 +75,26 @@ void OrderBook::init_trades_with_order(const Order *order, std::vector<Trade> *e
         trades.push_back(new_trade);
         executed_trades->push_back(new_trade);
 
-        std::erase()
+        remove_order(existing_order.order_id);
+
+        order->quantity = 0;
     }
 }
 
-bool OrderBook::remove_order(const uint32_t order_id) {
-    // TODO
-    return false;
+bool OrderBook::remove_order(uint32_t order_id) {
+    if (!order_lookup.contains(order_id)) {
+        return false;
+    }
+
+    OrderLocation order_location = order_lookup[order_id];
+
+    auto rm_vector = (order_location.side == Side::Buy) ? bids[order_location.price] : asks[order_location.price];
+
+    rm_vector.erase(rm_vector.begin() + order_location.index);
+
+    return true;
 }
 
 std::vector<Trade> OrderBook::show_trades() {
     return trades;
-}
-
-int32_t OrderBook::get_optimal_price(const std::map<int32_t, std::vector<Order>> &bids, const std::map<int32_t, std::vector<Order>> &asks, Side side) {
-    if (side == Side::Buy) {
-        return asks.begin()->first;
-    } else {
-        return std::prev(bids.end())->first;
-    }
 }
