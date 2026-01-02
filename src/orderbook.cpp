@@ -33,6 +33,8 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
     size_t index = size((*target_map)[new_order.price]) - 1;
     OrderLocation order_location{new_order.side, new_order.price, index};
     order_lookup[new_order.order_id] = order_location;
+
+    return executed_trades;
 }
 
 void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *executed_trades) {
@@ -87,11 +89,20 @@ bool OrderBook::remove_order(uint32_t order_id) {
     }
 
     OrderLocation order_location = order_lookup[order_id];
+    auto *target_map = (order_location.side == Side::Buy) ? &bids : &asks;
+    auto *orders_at_price = & (*target_map)[order_location.price];
 
-    auto rm_vector = (order_location.side == Side::Buy) ? bids[order_location.price] : asks[order_location.price];
+    orders_at_price->erase(orders_at_price->begin() + order_location.index);
 
-    rm_vector.erase(rm_vector.begin() + order_location.index);
+    for (size_t i = order_location.index; i < orders_at_price->size(); i++) {
+        order_lookup[(*orders_at_price)[i].order_id].index = i;
+    }
 
+    order_lookup.erase(order_id);
+
+    if (orders_at_price->empty()) {
+        target_map->erase(order_location.price);
+    }
     return true;
 }
 
