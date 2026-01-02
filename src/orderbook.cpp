@@ -1,6 +1,5 @@
 #include "orderbook.hpp"
 
-#include <iostream>
 #include <signal.h>
 
 OrderBook::OrderBook() {
@@ -112,10 +111,5 @@ bool OrderBook::remove_order(uint32_t order_id) {
 }
 
 std::vector<Trade> OrderBook::show_trades() {
-    std::cout << "A log of trades sorted from newest to oldest:" << '\n';
-    for (auto const &trade : trades) {
-        std::cout << "Traded " << trade.quantity << " at price " << trade.price << '\n';
-    }
-
     return trades;
 }
