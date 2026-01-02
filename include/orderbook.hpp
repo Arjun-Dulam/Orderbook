@@ -53,6 +53,4 @@ public:
      * @return Vector containing all executed trades
      */
     std::vector<Trade> show_trades();
-
-
 };

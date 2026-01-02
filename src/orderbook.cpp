@@ -38,48 +38,52 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
 }
 
 void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *executed_trades) {
-    if (order->side == Side::Buy && asks.empty()) {
-        return;
-    } else if (order->side == Side::Sell && bids.empty()) {
-        return;
-    }
+    while (order->quantity > 0) {
+        if (order->side == Side::Buy && asks.empty()) {
+            return;
+        } else if (order->side == Side::Sell && bids.empty()) {
+            return;
+        }
 
-    int32_t optimal_existing_price;
-    Order existing_order;
+        int32_t optimal_existing_price;
+        Order *existing_order;
 
-    if (order->side == Side::Buy) {
-        optimal_existing_price = asks.begin()->first;
-        existing_order = asks.begin()->second[0];
-    } else {
-        optimal_existing_price = std::prev(bids.end())->first;
-        existing_order = std::prev(bids.end())->second[0];
-    }
+        if (order->side == Side::Buy) {
+            optimal_existing_price = asks.begin()->first;
+            existing_order = &asks.begin()->second[0];
+        } else {
+            optimal_existing_price = std::prev(bids.end())->first;
+            existing_order = &std::prev(bids.end())->second[0];
+        }
 
-    bool trade_possible;
+        bool trade_possible;
 
-    if (order->side == Side::Buy) {
-        trade_possible = optimal_existing_price <= order->price;
-    } else {
-        trade_possible = optimal_existing_price >= order->price;
-    }
+        if (order->side == Side::Buy) {
+            trade_possible = optimal_existing_price <= order->price;
+        } else {
+            trade_possible = optimal_existing_price >= order->price;
+        }
 
-    trade_possible = trade_possible && (order->quantity == existing_order.quantity);
+        if (!trade_possible) {
+            break;
+        }
 
-    if (trade_possible) {
         Trade new_trade {
             next_trade_id++,
             optimal_existing_price,
-            existing_order.quantity,
-            (order->side == Side::Buy) ? order->order_id : existing_order.order_id,
-            (order->side == Side::Sell) ? order->order_id : existing_order.order_id,
+            std::min(order->quantity, existing_order->quantity),
+            (order->side == Side::Buy) ? order->order_id : existing_order->order_id,
+            (order->side == Side::Sell) ? order->order_id : existing_order->order_id
         };
+
+        order->quantity -= new_trade.quantity;
+        existing_order->quantity -= new_trade.quantity;
+        if (existing_order->quantity == 0) {
+            remove_order(existing_order->order_id);
+        }
 
         trades.push_back(new_trade);
         executed_trades->push_back(new_trade);
-
-        remove_order(existing_order.order_id);
-
-        order->quantity = 0;
     }
 }
 
