@@ -11,6 +11,7 @@ OrderBook::OrderBook() {
 std::vector<Trade> OrderBook::add_order(const Order &order) {
     Order new_order = order;
     new_order.timestamp = next_timestamp++;
+    new_order.order_id = next_order_id++;
     std::vector<Trade> executed_trades;
 
     init_trades_with_order(&new_order, &executed_trades);
