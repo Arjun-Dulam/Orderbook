@@ -1,15 +1,12 @@
 #include "orderbook.hpp"
 
-#include <signal.h>
-
 OrderBook::OrderBook() {
     next_timestamp = 0;
     next_trade_id = 0;
     next_order_id = 0;
 }
 
-std::vector<Trade> OrderBook::add_order(const Order &order) {
-    Order new_order = order;
+std::vector<Trade> OrderBook::add_order(Order &new_order) {
     new_order.timestamp = next_timestamp++;
     new_order.order_id = next_order_id++;
     std::vector<Trade> executed_trades;
@@ -22,16 +19,11 @@ std::vector<Trade> OrderBook::add_order(const Order &order) {
 
     // Add order to orderbook if order not completely satisfied
 
-    std::map<int32_t, std::vector<Order>> *target_map;
-    if (new_order.side == Side::Buy) {
-        target_map = &bids;
-    } else {
-        target_map = &asks;
-    }
+    auto target_map = (new_order.side == Side::Buy) ? bids : asks;
 
-    (*target_map)[new_order.price].push_back(new_order);
+    target_map[new_order.price].push_back(new_order);
 
-    size_t index = size((*target_map)[new_order.price]) - 1;
+    size_t index = size(target_map[new_order.price]) - 1;
     OrderLocation order_location{new_order.side, new_order.price, index};
     order_lookup[new_order.order_id] = order_location;
 
@@ -46,16 +38,10 @@ void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *execute
             return;
         }
 
-        int32_t optimal_existing_price;
-        Order *existing_order;
+        auto intermediate = (order->side == Side::Buy) ? asks.begin() : std::prev(bids.end());
 
-        if (order->side == Side::Buy) {
-            optimal_existing_price = asks.begin()->first;
-            existing_order = &asks.begin()->second[0];
-        } else {
-            optimal_existing_price = std::prev(bids.end())->first;
-            existing_order = &std::prev(bids.end())->second[0];
-        }
+        int32_t optimal_existing_price = intermediate->first;
+        Order *existing_order = &intermediate->second[0];
 
         bool trade_possible;
 
@@ -81,6 +67,7 @@ void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *execute
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
             remove_order(existing_order->order_id);
+            existing_order = nullptr;
         }
 
         trades.push_back(new_trade);
@@ -111,6 +98,6 @@ bool OrderBook::remove_order(uint32_t order_id) {
     return true;
 }
 
-std::vector<Trade> OrderBook::show_trades() {
+const std::vector<Trade> OrderBook::show_trades() {
     return trades;
 }
