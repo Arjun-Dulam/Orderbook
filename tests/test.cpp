@@ -89,8 +89,8 @@ void test_exact_match() {
     assert(trades.size() == 1);
     assert(trades[0].price == 10000);
     assert(trades[0].quantity == 100);
-    assert(trades[0].buy_order_id == 2);
-    assert(trades[0].sell_order_id == 1);
+    assert(trades[0].buy_order_id == 1);
+    assert(trades[0].sell_order_id == 0);
 
     std::cout << "  ✓ Trade executed: " << trades[0].quantity
               << " @ $" << trades[0].price / 100.0 << std::endl;
@@ -162,17 +162,17 @@ void test_time_priority() {
     OrderBook book;
 
     // Add two sell orders at same price
-    Order sell1{1, Side::Sell, 10000, 100, 0};
-    Order sell2{2, Side::Sell, 10000, 100, 0};
+    Order sell1{0, Side::Sell, 10000, 100, 0};
+    Order sell2{1, Side::Sell, 10000, 100, 0};
     book.add_order(sell1);
     book.add_order(sell2);
 
     // Buy order should match with first sell (order_id=1)
-    Order buy1{3, Side::Buy, 10000, 100, 0};
+    Order buy1{2, Side::Buy, 10000, 100, 0};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
-    assert(trades[0].sell_order_id == 1);  // Should match first order
+    assert(trades[0].sell_order_id == 0);  // Should match first order
 
     std::cout << "  ✓ First order at price level matched (time priority)" << std::endl;
 }
@@ -182,9 +182,9 @@ void test_multiple_price_levels() {
     OrderBook book;
 
     // Add sells at different prices
-    Order sell1{1, Side::Sell, 10000, 100, 0};  // $100.00
-    Order sell2{2, Side::Sell, 10100, 100, 0};  // $101.00
-    Order sell3{3, Side::Sell, 9900, 100, 0};   // $99.00
+    Order sell1{0, Side::Sell, 10000, 100, 0};  // $100.00
+    Order sell2{1, Side::Sell, 10100, 100, 0};  // $101.00
+    Order sell3{2, Side::Sell, 9900, 100, 0};   // $99.00
     book.add_order(sell1);
     book.add_order(sell2);
     book.add_order(sell3);
@@ -195,7 +195,7 @@ void test_multiple_price_levels() {
 
     assert(trades.size() == 1);
     assert(trades[0].price == 9900);  // Should match lowest ask
-    assert(trades[0].sell_order_id == 3);
+    assert(trades[0].sell_order_id == 2);
 
     std::cout << "  ✓ Matched with best price ($99.00)" << std::endl;
 }
@@ -205,17 +205,17 @@ void test_both_sides() {
     OrderBook book;
 
     // Add buy at $100.00
-    Order buy1{1, Side::Buy, 10000, 100, 0};
+    Order buy1{0, Side::Buy, 10000, 100, 0};
     book.add_order(buy1);
 
     // Add sell at $99.00 (crosses, should match)
-    Order sell1{2, Side::Sell, 9900, 100, 0};
+    Order sell1{1, Side::Sell, 9900, 100, 0};
     auto trades = book.add_order(sell1);
 
     assert(trades.size() == 1);
     assert(trades[0].price == 10000);  // Should execute at buy price (existing order)
-    assert(trades[0].buy_order_id == 1);
-    assert(trades[0].sell_order_id == 2);
+    assert(trades[0].buy_order_id == 0);
+    assert(trades[0].sell_order_id == 1);
 
     std::cout << "  ✓ Sell matching against existing buy works" << std::endl;
 }

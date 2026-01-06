@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 
-enum Side {
+enum class Side {
     Buy,
     Sell
 };

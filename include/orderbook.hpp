@@ -7,12 +7,6 @@
 
 #include "order.hpp"
 
-struct OrderLocation {
-    Side side;
-    int32_t price;
-    size_t index;
-};
-
 class OrderBook {
 private:
     std::map<int32_t, std::vector<Order>> asks; // Mapping price to array of corresponding asks
@@ -23,15 +17,12 @@ private:
     uint32_t next_trade_id;
     uint32_t next_order_id;
 
-public:
-    OrderBook();
+    struct OrderLocation {
+        Side side;
+        int32_t price;
+        size_t index;
+    };
 
-    /**
-     * @brief Adds order to order book, executes and returns possible trades
-     * @param order Address of new order to be added to orderbook
-     * @return Vector containing trades executed upon new order addition
-     */
-    std::vector<Trade> add_order(const Order &order);
 
     /**
      * @brief Executes possible trades given the addition of a new order. Modifies executed_trades in place.
@@ -40,6 +31,15 @@ public:
      */
     void init_trades_with_order(Order *order, std::vector<Trade> *executed_trades);
 
+public:
+    OrderBook();
+
+    /**
+     * @brief Adds order to order book, executes and returns possible trades
+     * @param order Address of new order to be added to orderbook
+     * @return Vector containing trades executed upon new order addition
+     */
+    std::vector<Trade> add_order(Order &order);
 
     /**
      * @brief Scans and removes order if it exists
@@ -49,8 +49,8 @@ public:
     bool remove_order(uint32_t order_id);
 
     /**
-     * @brief Shows executed trades
-     * @return Vector containing all executed trades
-     */
-    std::vector<Trade> show_trades();
+    * @brief Shows executed trades
+    * @return Vector containing all executed trades
+    */
+    const std::vector<Trade> show_trades();
 };
