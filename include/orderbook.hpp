@@ -9,6 +9,12 @@
 
 class OrderBook {
 private:
+    struct OrderLocation {
+        Side side;
+        int32_t price;
+        size_t index;
+    };
+
     std::map<int32_t, std::vector<Order>> asks; // Mapping price to array of corresponding asks
     std::map<int32_t, std::vector<Order>> bids; // Mapping price to array of corresponding bids
     std::unordered_map<uint32_t, OrderLocation> order_lookup; // Mapping order id to order location
@@ -16,13 +22,6 @@ private:
     uint64_t next_timestamp;
     uint32_t next_trade_id;
     uint32_t next_order_id;
-
-    struct OrderLocation {
-        Side side;
-        int32_t price;
-        size_t index;
-    };
-
 
     /**
      * @brief Executes possible trades given the addition of a new order. Modifies executed_trades in place.

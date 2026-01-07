@@ -33,4 +33,4 @@ Makefile
 **/.DS_Store
 
 # Dev notes
-dev_notes.txt
+*.txt

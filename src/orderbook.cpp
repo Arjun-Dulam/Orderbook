@@ -19,7 +19,7 @@ std::vector<Trade> OrderBook::add_order(Order &new_order) {
 
     // Add order to orderbook if order not completely satisfied
 
-    auto target_map = (new_order.side == Side::Buy) ? bids : asks;
+    auto &target_map = (new_order.side == Side::Buy) ? bids : asks;
 
     target_map[new_order.price].push_back(new_order);
 
