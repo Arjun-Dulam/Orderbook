@@ -51,5 +51,5 @@ public:
     * @brief Shows executed trades
     * @return Vector containing all executed trades
     */
-    const std::vector<Trade> show_trades();
+    const std::vector<Trade> show_trades() const;
 };

@@ -39,7 +39,18 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         auto intermediate = (order.side == Side::Buy) ? asks.begin() : std::prev(bids.end());
 
         int32_t optimal_existing_price = intermediate->first;
-        Order &existing_order = intermediate->second[0];
+        // Order &existing_order = intermediate->second[0];
+        Order *existing_order = nullptr;
+        for (auto order : intermediate->second) {
+            if (!order.filled) {
+                existing_order = &order;
+                break;
+            }
+        }
+
+        if (!existing_order) {
+            continue;
+        }
 
         bool trade_possible;
 
@@ -64,7 +75,8 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         order.quantity -= new_trade.quantity;
         existing_order.quantity -= new_trade.quantity;
         if (existing_order.quantity == 0) {
-            remove_order(existing_order.order_id);
+            // remove_order(existing_order.order_id);
+            existing_order.filled = true;
         }
 
         trades.push_back(new_trade);
@@ -99,3 +111,4 @@ bool OrderBook::remove_order(uint32_t order_id) {
 const std::vector<Trade> OrderBook::show_trades() const {
     return trades;
 }
+
