@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <chrono>
 #include "orderbook.hpp"
 
 void test_partial_fill_incoming_larger() {
@@ -7,11 +8,11 @@ void test_partial_fill_incoming_larger() {
     OrderBook book;
 
     // Sell 50 @ $100.00
-    Order sell1{1, Side::Sell, 10000, 50, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 50};
     book.add_order(sell1);
 
     // Buy 100 @ $100.00 (should match 50, then add 50 to book)
-    Order buy1{2, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 100};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
@@ -24,11 +25,11 @@ void test_partial_fill_existing_larger() {
     OrderBook book;
 
     // Sell 100 @ $100.00
-    Order sell1{1, Side::Sell, 10000, 100, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 100};
     book.add_order(sell1);
 
     // Buy 50 @ $100.00 (should match 50, sell order stays with 50)
-    Order buy1{2, Side::Buy, 10000, 50, 0};
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 50};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
@@ -41,15 +42,15 @@ void test_multiple_partial_matches() {
     OrderBook book;
 
     // Add three sell orders
-    Order sell1{1, Side::Sell, 10000, 30, 0};
-    Order sell2{2, Side::Sell, 10000, 20, 0};
-    Order sell3{3, Side::Sell, 10000, 40, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 30};
+    Order sell2{.order_id = 2, .side = Side::Sell, .price = 10000, .quantity = 20};
+    Order sell3{.order_id = 3, .side = Side::Sell, .price = 10000, .quantity = 40};
     book.add_order(sell1);
     book.add_order(sell2);
     book.add_order(sell3);
 
     // Buy 100 @ $100.00 (should match all three: 30+20+40=90, then add 10 to book)
-    Order buy1{4, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 4, .side = Side::Buy, .price = 10000, .quantity = 100};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 3);  // Three trades executed
@@ -67,7 +68,7 @@ void test_add_order_no_match() {
     std::cout << "Test 1: Add order with no match..." << std::endl;
     OrderBook book;
 
-    Order sell1{1, Side::Sell, 10100, 100, 0};  // Sell 100 @ $101.00
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10100, .quantity = 100};  // Sell 100 @ $101.00
     auto trades = book.add_order(sell1);
 
     assert(trades.size() == 0);
@@ -79,11 +80,11 @@ void test_exact_match() {
     OrderBook book;
 
     // Add sell order first
-    Order sell1{1, Side::Sell, 10000, 100, 0};  // Sell 100 @ $100.00
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 100};  // Sell 100 @ $100.00
     book.add_order(sell1);
 
     // Add matching buy order
-    Order buy1{2, Side::Buy, 10000, 100, 0};    // Buy 100 @ $100.00
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 100};    // Buy 100 @ $100.00
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
@@ -102,11 +103,11 @@ void test_price_priority() {
     OrderBook book;
 
     // Sell order at $100.00
-    Order sell1{1, Side::Sell, 10000, 50, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 50};
     book.add_order(sell1);
 
     // Buy order willing to pay $101.00 (should execute at $100.00)
-    Order buy1{2, Side::Buy, 10100, 50, 0};
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10100, .quantity = 50};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
@@ -120,11 +121,11 @@ void test_no_match_price_too_low() {
     OrderBook book;
 
     // Sell at $101.00
-    Order sell1{1, Side::Sell, 10100, 100, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10100, .quantity = 100};
     book.add_order(sell1);
 
     // Buy at $100.00 (lower than ask, no match)
-    Order buy1{2, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 100};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 0);
@@ -136,8 +137,8 @@ void test_remove_order() {
     OrderBook book;
 
     // Add two sell orders
-    Order sell1{1, Side::Sell, 10000, 100, 0};
-    Order sell2{2, Side::Sell, 10000, 50, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 100};
+    Order sell2{.order_id = 2, .side = Side::Sell, .price = 10000, .quantity = 50};
     book.add_order(sell1);
     book.add_order(sell2);
 
@@ -162,13 +163,13 @@ void test_time_priority() {
     OrderBook book;
 
     // Add two sell orders at same price
-    Order sell1{0, Side::Sell, 10000, 100, 0};
-    Order sell2{1, Side::Sell, 10000, 100, 0};
+    Order sell1{.order_id = 0, .side = Side::Sell, .price = 10000, .quantity = 100};
+    Order sell2{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 100};
     book.add_order(sell1);
     book.add_order(sell2);
 
     // Buy order should match with first sell (order_id=1)
-    Order buy1{2, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 100};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
@@ -182,15 +183,15 @@ void test_multiple_price_levels() {
     OrderBook book;
 
     // Add sells at different prices
-    Order sell1{0, Side::Sell, 10000, 100, 0};  // $100.00
-    Order sell2{1, Side::Sell, 10100, 100, 0};  // $101.00
-    Order sell3{2, Side::Sell, 9900, 100, 0};   // $99.00
+    Order sell1{.order_id = 0, .side = Side::Sell, .price = 10000, .quantity = 100};  // $100.00
+    Order sell2{.order_id = 1, .side = Side::Sell, .price = 10100, .quantity = 100};  // $101.00
+    Order sell3{.order_id = 2, .side = Side::Sell, .price = 9900, .quantity = 100};   // $99.00
     book.add_order(sell1);
     book.add_order(sell2);
     book.add_order(sell3);
 
     // Buy should match with lowest sell ($99.00)
-    Order buy1{4, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 4, .side = Side::Buy, .price = 10000, .quantity = 100};
     auto trades = book.add_order(buy1);
 
     assert(trades.size() == 1);
@@ -205,11 +206,11 @@ void test_both_sides() {
     OrderBook book;
 
     // Add buy at $100.00
-    Order buy1{0, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 0, .side = Side::Buy, .price = 10000, .quantity = 100};
     book.add_order(buy1);
 
     // Add sell at $99.00 (crosses, should match)
-    Order sell1{1, Side::Sell, 9900, 100, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 9900, .quantity = 100};
     auto trades = book.add_order(sell1);
 
     assert(trades.size() == 1);
@@ -225,14 +226,14 @@ void test_show_trades() {
     OrderBook book;
 
     // Execute two trades
-    Order sell1{1, Side::Sell, 10000, 100, 0};
+    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 100};
     book.add_order(sell1);
-    Order buy1{2, Side::Buy, 10000, 100, 0};
+    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 100};
     book.add_order(buy1);
 
-    Order sell2{3, Side::Sell, 10100, 50, 0};
+    Order sell2{.order_id = 3, .side = Side::Sell, .price = 10100, .quantity = 50};
     book.add_order(sell2);
-    Order buy2{4, Side::Buy, 10100, 50, 0};
+    Order buy2{.order_id = 4, .side = Side::Buy, .price = 10100, .quantity = 50};
     book.add_order(buy2);
 
     auto all_trades = book.show_trades();
@@ -241,9 +242,140 @@ void test_show_trades() {
     std::cout << "  ✓ show_trades() returns all " << all_trades.size() << " trades" << std::endl;
 }
 
-int main() {
-    std::cout << "=== OrderBook Day 4 Tests ===" << std::endl;
+void test_performance() {
+    std::cout << "\n=== Performance Test ===" << std::endl;
+    OrderBook book;
 
+    // Test 1: Add non-matching orders (builds order book depth)
+    std::cout << "\nTest 1: Add non-matching orders..." << std::endl;
+    const int NUM_ORDERS = 5000000;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Add 50k sells at prices $100.01-$150.00
+    for (int i = 0; i < NUM_ORDERS / 2; i++) {
+        Order sell{.order_id = static_cast<uint32_t>(i),
+                   .side = Side::Sell,
+                   .price = 10001 + (i % 5000),
+                   .quantity = 100};
+        book.add_order(sell);
+    }
+
+    // Add 50k buys at prices $50.00-$99.99
+    for (int i = NUM_ORDERS / 2; i < NUM_ORDERS; i++) {
+        Order buy{.order_id = static_cast<uint32_t>(i),
+                  .side = Side::Buy,
+                  .price = 5000 + (i % 5000),
+                  .quantity = 100};
+        book.add_order(buy);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    double orders_per_sec = (NUM_ORDERS * 1000.0) / duration.count();
+    std::cout << "  Added " << NUM_ORDERS << " non-matching orders" << std::endl;
+    std::cout << "  Time: " << duration.count() << " ms" << std::endl;
+    std::cout << "  Throughput: " << static_cast<int>(orders_per_sec) << " orders/sec" << std::endl;
+
+    // Test 2: Order cancellations
+    std::cout << "\nTest 2: Order cancellations..." << std::endl;
+    const int NUM_CANCELS = 5000000;
+
+    start = std::chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < NUM_CANCELS; i++) {
+        book.remove_order(i);
+    }
+
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    double cancels_per_sec = (NUM_CANCELS * 1000.0) / duration.count();
+    std::cout << "  Cancelled " << NUM_CANCELS << " orders" << std::endl;
+    std::cout << "  Time: " << duration.count() << " ms" << std::endl;
+    std::cout << "  Throughput: " << static_cast<int>(cancels_per_sec) << " cancels/sec" << std::endl;
+
+    // Test 3: Matching orders (creates trades)
+    std::cout << "\nTest 3: Matching orders..." << std::endl;
+    OrderBook book2;
+    const int NUM_MATCHES = 5000000;
+
+    // Add sells at $100.00
+    for (int i = 0; i < NUM_MATCHES; i++) {
+        Order sell{.order_id = static_cast<uint32_t>(i),
+                   .side = Side::Sell,
+                   .price = 1000 + (i % 1000),
+                   .quantity = 100};
+        book2.add_order(sell);
+    }
+
+    start = std::chrono::high_resolution_clock::now();
+
+    int total_trades = 0;
+    // Add matching buys at $100.00
+    for (int i = NUM_MATCHES; i < NUM_MATCHES * 2; i++) {
+        Order buy{.order_id = static_cast<uint32_t>(i),
+                  .side = Side::Buy,
+                  .price = 11000,
+                  .quantity = 100};
+        auto trades = book2.add_order(buy);
+        total_trades += trades.size();
+    }
+
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    double matches_per_sec = (NUM_MATCHES * 1000.0) / duration.count();
+    double trades_per_sec = (total_trades * 1000.0) / duration.count();
+    std::cout << "  Matched " << NUM_MATCHES << " orders" << std::endl;
+    std::cout << "  Executed " << total_trades << " trades" << std::endl;
+    std::cout << "  Time: " << duration.count() << " ms" << std::endl;
+    std::cout << "  Throughput: " << static_cast<int>(matches_per_sec) << " orders/sec" << std::endl;
+    std::cout << "  Throughput: " << static_cast<int>(trades_per_sec) << " trades/sec" << std::endl;
+
+    // Test 4: Mixed workload
+    std::cout << "\nTest 4: Mixed workload (add + match + cancel)..." << std::endl;
+    OrderBook book3;
+    const int MIXED_OPS = 5000000;
+
+    start = std::chrono::high_resolution_clock::now();
+
+    for (int i = 0; i < MIXED_OPS; i++) {
+        if (i % 3 == 0) {
+            // Add non-matching order
+            Order sell{.order_id = static_cast<uint32_t>(i),
+                       .side = Side::Sell,
+                       .price = 10100,
+                       .quantity = 100};
+            book3.add_order(sell);
+        } else if (i % 3 == 1) {
+            // Add matching order
+            Order buy{.order_id = static_cast<uint32_t>(i),
+                      .side = Side::Buy,
+                      .price = 10100,
+                      .quantity = 100};
+            book3.add_order(buy);
+        } else {
+            // Cancel order
+            if (i >= 6) {
+                book3.remove_order(i - 3);
+            }
+        }
+    }
+
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+    double ops_per_sec = (MIXED_OPS * 1000.0) / duration.count();
+    std::cout << "  Performed " << MIXED_OPS << " mixed operations" << std::endl;
+    std::cout << "  Time: " << duration.count() << " ms" << std::endl;
+    std::cout << "  Throughput: " << static_cast<int>(ops_per_sec) << " ops/sec" << std::endl;
+
+    std::cout << "\n=== Performance Test Complete ===" << std::endl;
+}
+
+int main() {
     test_add_order_no_match();
     test_exact_match();
     test_price_priority();
@@ -257,9 +389,10 @@ int main() {
     test_partial_fill_existing_larger();
     test_multiple_price_levels();
 
-
     std::cout << "\n=== All tests passed! ✓ ===" << std::endl;
-    std::cout << "\nDay 4 Complete! Ready for Day 5 (partial fills)." << std::endl;
+
+    // Run performance test
+    test_performance();
 
     return 0;
 }

@@ -67,16 +67,16 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         Trade new_trade {
             next_trade_id++,
             optimal_existing_price,
-            std::min(order.quantity, existing_order.quantity),
-            (order.side == Side::Buy) ? order.order_id : existing_order.order_id,
-            (order.side == Side::Sell) ? order.order_id : existing_order.order_id
+            std::min(order.quantity, existing_order->quantity),
+            (order.side == Side::Buy) ? order.order_id : existing_order->order_id,
+            (order.side == Side::Sell) ? order.order_id : existing_order->order_id
         };
 
         order.quantity -= new_trade.quantity;
-        existing_order.quantity -= new_trade.quantity;
-        if (existing_order.quantity == 0) {
+        existing_order->quantity -= new_trade.quantity;
+        if (existing_order->quantity == 0) {
             // remove_order(existing_order.order_id);
-            existing_order.filled = true;
+            existing_order->filled = true;
         }
 
         trades.push_back(new_trade);
