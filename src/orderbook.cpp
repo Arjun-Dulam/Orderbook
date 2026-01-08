@@ -11,7 +11,7 @@ std::vector<Trade> OrderBook::add_order(Order &new_order) {
     new_order.order_id = next_order_id++;
     std::vector<Trade> executed_trades;
 
-    init_trades_with_order(&new_order, &executed_trades);
+    init_trades_with_order(new_order, &executed_trades);
 
     if (new_order.quantity == 0) {
         return executed_trades;
@@ -19,36 +19,34 @@ std::vector<Trade> OrderBook::add_order(Order &new_order) {
 
     // Add order to orderbook if order not completely satisfied
 
-    auto &target_map = (new_order.side == Side::Buy) ? bids : asks;
-
-    target_map[new_order.price].push_back(new_order);
-
-    size_t index = size(target_map[new_order.price]) - 1;
+    auto &price_vector = (new_order.side == Side::Buy) ? bids[new_order.price] : asks[new_order.price];
+    price_vector.push_back(new_order);
+    size_t index = size(price_vector) - 1;
     OrderLocation order_location{new_order.side, new_order.price, index};
     order_lookup[new_order.order_id] = order_location;
 
     return executed_trades;
 }
 
-void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *executed_trades) {
-    while (order->quantity > 0) {
-        if (order->side == Side::Buy && asks.empty()) {
+void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *executed_trades) {
+    while (order.quantity > 0) {
+        if (order.side == Side::Buy && asks.empty()) {
             return;
-        } else if (order->side == Side::Sell && bids.empty()) {
+        } else if (order.side == Side::Sell && bids.empty()) {
             return;
         }
 
-        auto intermediate = (order->side == Side::Buy) ? asks.begin() : std::prev(bids.end());
+        auto intermediate = (order.side == Side::Buy) ? asks.begin() : std::prev(bids.end());
 
         int32_t optimal_existing_price = intermediate->first;
-        Order *existing_order = &intermediate->second[0];
+        Order &existing_order = intermediate->second[0];
 
         bool trade_possible;
 
-        if (order->side == Side::Buy) {
-            trade_possible = optimal_existing_price <= order->price;
+        if (order.side == Side::Buy) {
+            trade_possible = optimal_existing_price <= order.price;
         } else {
-            trade_possible = optimal_existing_price >= order->price;
+            trade_possible = optimal_existing_price >= order.price;
         }
 
         if (!trade_possible) {
@@ -58,16 +56,15 @@ void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *execute
         Trade new_trade {
             next_trade_id++,
             optimal_existing_price,
-            std::min(order->quantity, existing_order->quantity),
-            (order->side == Side::Buy) ? order->order_id : existing_order->order_id,
-            (order->side == Side::Sell) ? order->order_id : existing_order->order_id
+            std::min(order.quantity, existing_order.quantity),
+            (order.side == Side::Buy) ? order.order_id : existing_order.order_id,
+            (order.side == Side::Sell) ? order.order_id : existing_order.order_id
         };
 
-        order->quantity -= new_trade.quantity;
-        existing_order->quantity -= new_trade.quantity;
-        if (existing_order->quantity == 0) {
-            remove_order(existing_order->order_id);
-            existing_order = nullptr;
+        order.quantity -= new_trade.quantity;
+        existing_order.quantity -= new_trade.quantity;
+        if (existing_order.quantity == 0) {
+            remove_order(existing_order.order_id);
         }
 
         trades.push_back(new_trade);
@@ -76,11 +73,12 @@ void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *execute
 }
 
 bool OrderBook::remove_order(uint32_t order_id) {
-    if (!order_lookup.contains(order_id)) {
+    auto it = order_lookup.find(order_id);
+    if (it == order_lookup.end()) {
         return false;
     }
+    OrderLocation &order_location = it->second;
 
-    OrderLocation order_location = order_lookup[order_id];
     auto *target_map = (order_location.side == Side::Buy) ? &bids : &asks;
     auto *orders_at_price = & (*target_map)[order_location.price];
 
@@ -98,6 +96,6 @@ bool OrderBook::remove_order(uint32_t order_id) {
     return true;
 }
 
-const std::vector<Trade> OrderBook::show_trades() {
+const std::vector<Trade> OrderBook::show_trades() const {
     return trades;
 }
