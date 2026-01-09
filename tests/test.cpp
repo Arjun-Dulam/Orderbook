@@ -3,6 +3,8 @@
 #include <chrono>
 #include "orderbook.hpp"
 
+#define TEST_ORDERS 10000000
+
 void test_partial_fill_incoming_larger() {
     std::cout << "\nTest: Partial fill - incoming order larger..." << std::endl;
     OrderBook book;
@@ -248,7 +250,7 @@ void test_performance() {
 
     // Test 1: Add non-matching orders (builds order book depth)
     std::cout << "\nTest 1: Add non-matching orders..." << std::endl;
-    const int NUM_ORDERS = 5000000;
+    const int NUM_ORDERS = TEST_ORDERS;
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -280,7 +282,7 @@ void test_performance() {
 
     // Test 2: Order cancellations
     std::cout << "\nTest 2: Order cancellations..." << std::endl;
-    const int NUM_CANCELS = 5000000;
+    const int NUM_CANCELS = TEST_ORDERS;
 
     start = std::chrono::high_resolution_clock::now();
 
@@ -299,7 +301,7 @@ void test_performance() {
     // Test 3: Matching orders (creates trades)
     std::cout << "\nTest 3: Matching orders..." << std::endl;
     OrderBook book2;
-    const int NUM_MATCHES = 5000000;
+    const int NUM_MATCHES = TEST_ORDERS;
 
     // Add sells at $100.00
     for (int i = 0; i < NUM_MATCHES; i++) {
@@ -337,7 +339,7 @@ void test_performance() {
     // Test 4: Mixed workload
     std::cout << "\nTest 4: Mixed workload (add + match + cancel)..." << std::endl;
     OrderBook book3;
-    const int MIXED_OPS = 5000000;
+    const int MIXED_OPS = TEST_ORDERS;
 
     start = std::chrono::high_resolution_clock::now();
 
