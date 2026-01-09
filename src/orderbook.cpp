@@ -112,3 +112,14 @@ const std::vector<Trade> OrderBook::show_trades() const {
     return trades;
 }
 
+const void OrderBook::compact_orderbook() {
+    compact_orderbook_helper(bids);
+    compact_orderbook_helper(asks);
+}
+
+void OrderBook::compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &map) {
+    for (auto &[price, orders] : map) {
+        auto p = [] (const Order &order) {return order.filled};
+        orders.erase(std::remove_if(orders.begin(), orders.end(), p), orders.end());
+    }
+}

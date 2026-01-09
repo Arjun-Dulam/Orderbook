@@ -30,6 +30,11 @@ private:
      */
     void init_trades_with_order(Order &order, std::vector<Trade> *executed_trades);
 
+    /**
+     * @brief removes filled orders from a given map
+     * @param map map to remove filled orders from
+     */
+    void compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &map);
 public:
     OrderBook();
 
@@ -52,4 +57,9 @@ public:
     * @return Vector containing all executed trades
     */
     const std::vector<Trade> show_trades() const;
+
+    /**
+     * @brief Removes filled orders from orderbook.
+     */
+    const void compact_orderbook();
 };
