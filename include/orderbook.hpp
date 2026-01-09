@@ -23,6 +23,7 @@ private:
     uint32_t next_trade_id;
     uint32_t next_order_id;
 
+
     /**
      * @brief Executes possible trades given the addition of a new order. Modifies executed_trades in place.
      * @param order Order that has recently been added
@@ -31,7 +32,7 @@ private:
     void init_trades_with_order(Order &order, std::vector<Trade> *executed_trades);
 
     /**
-     * @brief removes filled orders from a given map
+     * @brief removes filled orders from given map
      * @param map map to remove filled orders from
      */
     void compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &map);
@@ -56,10 +57,10 @@ public:
     * @brief Shows executed trades
     * @return Vector containing all executed trades
     */
-    const std::vector<Trade> show_trades() const;
+    const std::vector<Trade>& show_trades() const;
 
     /**
      * @brief Removes filled orders from orderbook.
      */
-    const void compact_orderbook();
+    void compact_orderbook();
 };

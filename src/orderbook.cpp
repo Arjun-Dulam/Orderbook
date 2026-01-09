@@ -39,10 +39,9 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         auto intermediate = (order.side == Side::Buy) ? asks.begin() : std::prev(bids.end());
 
         int32_t optimal_existing_price = intermediate->first;
-        // Order &existing_order = intermediate->second[0];
         Order *existing_order = nullptr;
-        for (auto order : intermediate->second) {
-            if (!order.filled) {
+        for (auto &order : intermediate->second) {
+            if (!order.deleted_or_filled) {
                 existing_order = &order;
                 break;
             }
@@ -75,8 +74,7 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         order.quantity -= new_trade.quantity;
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
-            // remove_order(existing_order.order_id);
-            existing_order->filled = true;
+            existing_order->deleted_or_filled = true;
         }
 
         trades.push_back(new_trade);
@@ -86,40 +84,38 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
 
 bool OrderBook::remove_order(uint32_t order_id) {
     auto it = order_lookup.find(order_id);
-    if (it == order_lookup.end()) {
-        return false;
-    }
-    OrderLocation &order_location = it->second;
+    if (it == order_lookup.end()) {return false;}
 
-    auto *target_map = (order_location.side == Side::Buy) ? &bids : &asks;
-    auto *orders_at_price = & (*target_map)[order_location.price];
+    OrderLocation order_location = it->second;
+    auto &target_map = (order_location.side == Side::Buy) ? bids : asks;
+    auto &orders_at_price = target_map[order_location.price];
 
-    orders_at_price->erase(orders_at_price->begin() + order_location.index);
+    orders_at_price[order_location.index].deleted_or_filled = true;
+    order_lookup.erase(it);
 
-    for (size_t i = order_location.index; i < orders_at_price->size(); i++) {
-        order_lookup[(*orders_at_price)[i].order_id].index = i;
-    }
-
-    order_lookup.erase(order_id);
-
-    if (orders_at_price->empty()) {
-        target_map->erase(order_location.price);
-    }
     return true;
 }
 
-const std::vector<Trade> OrderBook::show_trades() const {
+const std::vector<Trade>& OrderBook::show_trades() const {
     return trades;
 }
 
-const void OrderBook::compact_orderbook() {
+void OrderBook::compact_orderbook() {
     compact_orderbook_helper(bids);
     compact_orderbook_helper(asks);
 }
 
 void OrderBook::compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &map) {
     for (auto &[price, orders] : map) {
-        auto p = [] (const Order &order) {return order.filled};
+        auto p = [] (const Order &order) {return order.deleted_or_filled;};
         orders.erase(std::remove_if(orders.begin(), orders.end(), p), orders.end());
+
+        for (size_t i = 0; i < orders.size(); i++) {
+            order_lookup[orders[i].order_id].index = i;
+        }
+
+        if (orders.empty()) {
+            orders.erase(price);
+        }
     }
 }
