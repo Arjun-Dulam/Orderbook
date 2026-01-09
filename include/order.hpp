@@ -16,7 +16,7 @@ struct Order {
     // Using signed int to accommodate negative prices for commodities such as what happened to oil in 2020.
     uint32_t quantity;
     Side side;
-    bool filled = false;
+    bool deleted_or_filled = false;
 };
 
 struct Trade {
