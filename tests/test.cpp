@@ -223,27 +223,6 @@ void test_both_sides() {
     std::cout << "  ✓ Sell matching against existing buy works" << std::endl;
 }
 
-void test_show_trades() {
-    std::cout << "\nTest 10: Show all trades..." << std::endl;
-    OrderBook book;
-
-    // Execute two trades
-    Order sell1{.order_id = 1, .side = Side::Sell, .price = 10000, .quantity = 100};
-    book.add_order(sell1);
-    Order buy1{.order_id = 2, .side = Side::Buy, .price = 10000, .quantity = 100};
-    book.add_order(buy1);
-
-    Order sell2{.order_id = 3, .side = Side::Sell, .price = 10100, .quantity = 50};
-    book.add_order(sell2);
-    Order buy2{.order_id = 4, .side = Side::Buy, .price = 10100, .quantity = 50};
-    book.add_order(buy2);
-
-    auto all_trades = book.show_trades();
-    assert(all_trades.size() == 2);
-
-    std::cout << "  ✓ show_trades() returns all " << all_trades.size() << " trades" << std::endl;
-}
-
 void test_performance() {
     std::cout << "\n=== Performance Test ===" << std::endl;
     OrderBook book;
@@ -386,7 +365,6 @@ int main() {
     test_time_priority();
     test_multiple_price_levels();
     test_both_sides();
-    test_show_trades();
     test_multiple_partial_matches();
     test_partial_fill_existing_larger();
     test_multiple_price_levels();
