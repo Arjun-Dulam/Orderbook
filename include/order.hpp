@@ -9,6 +9,7 @@ enum class Side : uint8_t {
 };
 
 struct Order {
+    // TODO: I should not be able to set the timestamp, order_id when instantiating
     uint64_t timestamp;
     uint32_t order_id;
     int32_t price;
@@ -20,6 +21,7 @@ struct Order {
 };
 
 struct Trade {
+    // TODO: I should not be able to set the trade_id when instantiating
     uint32_t trade_id;
     int32_t price;
     uint32_t quantity;
