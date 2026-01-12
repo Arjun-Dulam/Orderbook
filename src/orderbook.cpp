@@ -1,4 +1,4 @@
-#include "orderbook.hpp"
+#include "../include/orderbook.hpp"
 #define COMPACTION_RATIO 0.25
 
 OrderBook::OrderBook() {
@@ -72,7 +72,6 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         }
 
         Trade new_trade {
-            next_trade_id++,
             optimal_existing_price,
             std::min(order.quantity, existing_order->quantity),
             (order.side == Side::Buy) ? order.order_id : existing_order->order_id,

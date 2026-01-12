@@ -43,14 +43,12 @@ bool OrderGenerator::should_cancel() {
 }
 
 Order OrderGenerator::generate_order() {
-    Order new_order = {
-        .timestamp = 0,
-        .order_id = 0,
-        .price = generate_price(),
-        .quantity = generate_quantity(),
-        .side = generate_side(),
-        .deleted_or_filled = false
-    };
+    Order new_order(
+        generate_price(),
+        generate_quantity(),
+        generate_side(),
+        false
+    );
 
     return new_order;
 }
