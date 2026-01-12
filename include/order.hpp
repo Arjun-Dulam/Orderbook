@@ -9,7 +9,6 @@ enum class Side : uint8_t {
 };
 
 class Order {
-    // TODO: I should not be able to set the timestamp, order_id when instantiating
 private:
     uint64_t timestamp;
     uint32_t order_id;
@@ -31,7 +30,6 @@ public:
 };
 
 class Trade {
-    // TODO: I should not be able to set the trade_id when instantiating
 private:
     uint32_t trade_id;
 
