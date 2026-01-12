@@ -33,4 +33,4 @@ Makefile
 
 # Dev notes
 *.txt
-!testing_plan.mdtesting_plan.md
+!testing_plan.md
