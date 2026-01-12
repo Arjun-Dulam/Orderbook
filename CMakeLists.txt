@@ -11,6 +11,8 @@ set(SOURCE
     tests/test.cpp
     src/orderbook.cpp
     src/order.cpp
+    benchmarks/order_generator.cpp
+    benchmarks/orderbook_bench.cpp
 )
 
 include(FetchContent)
