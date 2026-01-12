@@ -1,5 +1,4 @@
 #include "orderbook.hpp"
-#define COMPACTION_RATIO 0.25
 
 OrderBook::OrderBook() {
     next_timestamp = 0;
@@ -12,7 +11,7 @@ std::vector<Trade> OrderBook::add_order(Order &new_order) {
     new_order.order_id = next_order_id++;
     std::vector<Trade> executed_trades;
 
-    init_trades_with_order(new_order, &executed_trades);
+    init_trades_with_order(&new_order, &executed_trades);
 
     if (new_order.quantity == 0) {
         return executed_trades;
@@ -20,51 +19,36 @@ std::vector<Trade> OrderBook::add_order(Order &new_order) {
 
     // Add order to orderbook if order not completely satisfied
 
-    auto &price_vector = (new_order.side == Side::Buy) ? bids[new_order.price] : asks[new_order.price];
-    price_vector.push_back(new_order);
-    size_t index = size(price_vector) - 1;
+    auto &target_map = (new_order.side == Side::Buy) ? bids : asks;
+
+    target_map[new_order.price].push_back(new_order);
+
+    size_t index = size(target_map[new_order.price]) - 1;
     OrderLocation order_location{new_order.side, new_order.price, index};
     order_lookup[new_order.order_id] = order_location;
-    total_orders_count++;
 
     return executed_trades;
 }
 
-void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *executed_trades) {
-    while (order.quantity > 0) {
-        if (order.side == Side::Buy && asks.empty()) {
+void OrderBook::init_trades_with_order(Order *order, std::vector<Trade> *executed_trades) {
+    while (order->quantity > 0) {
+        if (order->side == Side::Buy && asks.empty()) {
             return;
-        } else if (order.side == Side::Sell && bids.empty()) {
+        } else if (order->side == Side::Sell && bids.empty()) {
             return;
         }
 
-        auto intermediate = (order.side == Side::Buy) ? asks.begin() : std::prev(bids.end());
+        auto intermediate = (order->side == Side::Buy) ? asks.begin() : std::prev(bids.end());
 
         int32_t optimal_existing_price = intermediate->first;
-        Order *existing_order = nullptr;
-        for (auto &prospect_order : intermediate->second) {
-            if (!prospect_order.deleted_or_filled) {
-                existing_order = &prospect_order;
-                break;
-            }
-        }
-
-        if (!existing_order) {
-            if (order.side == Side::Buy) {
-                asks.erase(intermediate);
-            } else {
-                bids.erase(intermediate);
-            }
-
-            continue;
-        }
+        Order *existing_order = &intermediate->second[0];
 
         bool trade_possible;
 
-        if (order.side == Side::Buy) {
-            trade_possible = optimal_existing_price <= order.price;
+        if (order->side == Side::Buy) {
+            trade_possible = optimal_existing_price <= order->price;
         } else {
-            trade_possible = optimal_existing_price >= order.price;
+            trade_possible = optimal_existing_price >= order->price;
         }
 
         if (!trade_possible) {
@@ -74,15 +58,16 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         Trade new_trade {
             next_trade_id++,
             optimal_existing_price,
-            std::min(order.quantity, existing_order->quantity),
-            (order.side == Side::Buy) ? order.order_id : existing_order->order_id,
-            (order.side == Side::Sell) ? order.order_id : existing_order->order_id
+            std::min(order->quantity, existing_order->quantity),
+            (order->side == Side::Buy) ? order->order_id : existing_order->order_id,
+            (order->side == Side::Sell) ? order->order_id : existing_order->order_id
         };
 
-        order.quantity -= new_trade.quantity;
+        order->quantity -= new_trade.quantity;
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
-            existing_order->deleted_or_filled = true;
+            remove_order(existing_order->order_id);
+            existing_order = nullptr;
         }
 
         trades.push_back(new_trade);
@@ -91,50 +76,28 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
 }
 
 bool OrderBook::remove_order(uint32_t order_id) {
-    auto it = order_lookup.find(order_id);
-    if (it == order_lookup.end()) {return false;}
-
-    OrderLocation order_location = it->second;
-    auto &target_map = (order_location.side == Side::Buy) ? bids : asks;
-    auto &orders_at_price = target_map[order_location.price];
-
-    orders_at_price[order_location.index].deleted_or_filled = true;
-    order_lookup.erase(it);
-    deleted_orders_count++;
-
-    if (double(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
-        compact_orderbook();
+    if (!order_lookup.contains(order_id)) {
+        return false;
     }
 
+    OrderLocation order_location = order_lookup[order_id];
+    auto *target_map = (order_location.side == Side::Buy) ? &bids : &asks;
+    auto *orders_at_price = & (*target_map)[order_location.price];
+
+    orders_at_price->erase(orders_at_price->begin() + order_location.index);
+
+    for (size_t i = order_location.index; i < orders_at_price->size(); i++) {
+        order_lookup[(*orders_at_price)[i].order_id].index = i;
+    }
+
+    order_lookup.erase(order_id);
+
+    if (orders_at_price->empty()) {
+        target_map->erase(order_location.price);
+    }
     return true;
 }
 
-const std::vector<Trade>& OrderBook::show_trades() const {
+const std::vector<Trade> OrderBook::show_trades() {
     return trades;
-}
-
-void OrderBook::compact_orderbook() {
-    compact_orderbook_helper(bids);
-    compact_orderbook_helper(asks);
-    total_orders_count -= deleted_orders_count;
-    deleted_orders_count = 0;
-}
-
-void OrderBook::compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &map) {
-    for (auto &[price, orders] : map) {
-        auto p = [] (const Order &order) {return order.deleted_or_filled;};
-        orders.erase(std::remove_if(orders.begin(), orders.end(), p), orders.end());
-
-        for (size_t i = 0; i < orders.size(); i++) {
-            order_lookup[orders[i].order_id].index = i;
-        }
-    }
-
-    for (auto it = map.begin(); it != map.end(); ) {
-        if (it->second.empty()) {
-            it = map.erase(it);
-        } else {
-            ++it;
-        }
-    }
 }
