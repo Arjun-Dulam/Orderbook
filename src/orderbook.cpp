@@ -130,7 +130,7 @@ void OrderBook::compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &
         }
     }
 
-    for (auto it = map.begin(); it != map.end(); /* no increment here */) {
+    for (auto it = map.begin(); it != map.end(); ) {
         if (it->second.empty()) {
             it = map.erase(it);
         } else {
