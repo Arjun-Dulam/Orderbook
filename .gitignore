@@ -26,7 +26,6 @@ CMakeFiles/
 cmake_install.cmake
 Makefile
 *.cmake
-CMakeLists.txt
 
 # macOS
 .DS_Store
@@ -34,3 +33,4 @@ CMakeLists.txt
 
 # Dev notes
 *.txt
+!testing_plan.md
