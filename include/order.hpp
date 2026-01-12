@@ -42,7 +42,7 @@ public:
     uint32_t buy_order_id;
     uint32_t sell_order_id;
 
-    inline const uint32_t get_trade_id() const {return trade_id;}
+    inline uint32_t get_trade_id() const {return trade_id;}
 
     Trade(int32_t p, uint32_t q, uint32_t b_o_id, uint32_t s_o_id) :
     trade_id(0), price(p), quantity(q), buy_order_id(b_o_id), sell_order_id(s_o_id) {}
