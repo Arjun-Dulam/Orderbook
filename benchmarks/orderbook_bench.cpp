@@ -129,9 +129,9 @@ static void BM_RemoveOrder_VaryDepth(benchmark::State &state) {
 
 BENCHMARK(BM_RemoveOrder_VaryDepth)
     -> Arg(10000)
-    -> Arg(100000);
-    // -> Arg(1000000)
-    // -> Arg(10000000)
+    -> Arg(100000)
+    -> Arg(1000000)
+    -> Arg(10000000);
     // -> Arg(NUM_ORDERS);
 
 /**
