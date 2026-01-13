@@ -8,6 +8,8 @@
 #include "order.hpp"
 
 class OrderBook {
+    // TODO: Critical Design Flaw: Trader has no way of accesing order_id after creating order. Create Trader struct and
+    // add order-id to some optimal DS that trader has access to.
 private:
     struct OrderLocation {
         Side side;
