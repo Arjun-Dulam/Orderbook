@@ -10,8 +10,8 @@ if(NOT CMAKE_BUILD_TYPE)
 FORCE)
 endif()
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
-#set(CMAKE_BUILD_TYPE RelWithDebInfo)
+#set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
+set(CMAKE_BUILD_TYPE Debug)
 
 include(FetchContent)
 

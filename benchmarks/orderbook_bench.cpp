@@ -113,16 +113,16 @@ static void BM_RemoveOrder_VaryDepth(benchmark::State &state) {
     size_t orderIdx = 0;
 
     for (auto _ : state) {
-        bool removal = order_book.remove_order(orders_to_remove[orderIdx]);
-        benchmark::DoNotOptimize(removal);
         if (orderIdx >= orders_to_remove.size() - 1) {
             state.PauseTiming();
             orderIdx = 0;
-            order_book = order_book_backup;
+            // order_book = order_book_backup;
             state.ResumeTiming();
-        } else {
-            orderIdx++;
         }
+        bool removal = order_book.remove_order(orders_to_remove[orderIdx]);
+        benchmark::DoNotOptimize(removal);
+
+        orderIdx++;
     }
     state.SetItemsProcessed(state.iterations());
 }

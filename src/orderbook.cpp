@@ -81,7 +81,7 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         order.quantity -= new_trade.quantity;
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
-            existing_order->deleted_or_filled = true;
+            remove_order(existing_order->get_order_id());
         }
 
         trades.push_back(new_trade);
