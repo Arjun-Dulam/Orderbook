@@ -1,5 +1,3 @@
-# Bash Script Written by Claude Opus 4.5
-
 #!/bin/bash
 set -e  # Exit on error
 
