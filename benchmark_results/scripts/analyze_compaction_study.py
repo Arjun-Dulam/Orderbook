@@ -192,7 +192,7 @@ def print_summary(data):
 
 if __name__ == "__main__":
     # Configuration - paths relative to script location
-    results_file = "../results/compaction_ratios_run2"
+    results_file = ""
     output_dir = "../results"
 
     print("Compaction Ratio Performance Analysis")
