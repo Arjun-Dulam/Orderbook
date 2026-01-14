@@ -9,7 +9,6 @@ OrderGenerator::OrderGenerator(MarketConfig cfg, uint32_t seed) :
     rng(seed),
     price_dist(0.0, cfg.price_std_dev),
     uniform_dist(0.0, 1.0),
-    arrival_dist(1.0 / cfg.arrival_rate),
     side_dist(cfg.buy_sell_ratio),
     cancel_dist(cfg.cancel_rate)
 {
@@ -26,7 +25,7 @@ uint32_t OrderGenerator::generate_quantity() {
 
     double inner = ((max_pow - min_pow) * uniform_dist(rng) + min_pow);
 
-    return uint32_t(pow(inner, 1 / config.power_law_alpha));
+    return static_cast<uint32_t>(pow(inner, 1 / config.power_law_alpha));
     
     /**
      * TODO: This sucks ass. Calling pow() too much. Optimize by precomputing, then computing again

@@ -94,7 +94,7 @@ void OrderBook::mark_order_deleted(Order *order) {
     order_lookup.erase(order->order_id);
     deleted_orders_count++;
 
-    if (double(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
+    if (static_cast<double>(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
         compact_orderbook();
     }
 }
