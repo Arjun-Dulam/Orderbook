@@ -1,5 +1,5 @@
-#include "orderbook.hpp"
-#define COMPACTION_RATIO 0.25
+#include "../include/orderbook.hpp"
+#define COMPACTION_RATIO 0.75
 
 OrderBook::OrderBook() {
     next_timestamp = 0;
@@ -72,7 +72,6 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         }
 
         Trade new_trade {
-            next_trade_id++,
             optimal_existing_price,
             std::min(order.quantity, existing_order->quantity),
             (order.side == Side::Buy) ? order.order_id : existing_order->order_id,
@@ -82,11 +81,21 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         order.quantity -= new_trade.quantity;
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
-            existing_order->deleted_or_filled = true;
+            mark_order_deleted(existing_order);
         }
 
         trades.push_back(new_trade);
         executed_trades->push_back(new_trade);
+    }
+}
+
+void OrderBook::mark_order_deleted(Order *order) {
+    order->deleted_or_filled = true;
+    order_lookup.erase(order->order_id);
+    deleted_orders_count++;
+
+    if (static_cast<double>(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
+        compact_orderbook();
     }
 }
 
@@ -97,14 +106,9 @@ bool OrderBook::remove_order(uint32_t order_id) {
     OrderLocation order_location = it->second;
     auto &target_map = (order_location.side == Side::Buy) ? bids : asks;
     auto &orders_at_price = target_map[order_location.price];
+    Order *removing_order = &orders_at_price[order_location.index];
 
-    orders_at_price[order_location.index].deleted_or_filled = true;
-    order_lookup.erase(it);
-    deleted_orders_count++;
-
-    if (double(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
-        compact_orderbook();
-    }
+    mark_order_deleted(removing_order);
 
     return true;
 }
@@ -130,7 +134,7 @@ void OrderBook::compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &
         }
     }
 
-    for (auto it = map.begin(); it != map.end(); /* no increment here */) {
+    for (auto it = map.begin(); it != map.end(); ) {
         if (it->second.empty()) {
             it = map.erase(it);
         } else {
