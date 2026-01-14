@@ -8,8 +8,7 @@
 struct MarketConfig {
     int32_t base_price = 10000;
     double price_std_dev = 100;
-    double arrival_rate = 1000;
-    double cancel_rate = .30;
+    double cancel_rate = .75;
     uint32_t min_quantity = 1;
     uint32_t max_quantity = 10000;
     double power_law_alpha = 2.5;
@@ -44,11 +43,6 @@ private:
      */
     std::bernoulli_distribution cancel_dist;
 
-    /**
-     * Used to model the interval times between orders. Simulates clusters of orders and 'dry' periods given a
-     * average order arrival time.
-     */
-    std::exponential_distribution<double> arrival_dist;
 public:
     OrderGenerator(MarketConfig cfg, uint32_t seed = 67);
 

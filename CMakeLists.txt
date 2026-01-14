@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG -flto")
-
 #set(CMAKE_BUILD_TYPE Debug)
 
 include(FetchContent)
@@ -34,4 +33,4 @@ add_executable(OrderBookBenchmark ${BENCH_SOURCE})
 
 target_link_libraries(OrderBookBenchmark benchmark::benchmark)
 
-target_include_directories(OrderBookBenchmark PRIVATE ${benchmark_SOURCE_DIR}/include)
+#target_include_directories(OrderBookBenchmark PRIVATE ${benchmark_SOURCE_DIR}/include)
