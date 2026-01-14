@@ -1,0 +1,385 @@
+Starting Compaction Study - Wed Jan 14 08:17:05 EST 2026
+Testing ratios: 0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95
+
+========================================
+Testing Compaction Ratio: 0.15
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T08:17:10-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 5.13, 3.86, 3.25
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   828 ns          704 ns      1000000 items_per_second=1.41946M/s
+BM_AddOrder_No_Match/1000                513 ns          501 ns      1000000 items_per_second=1.99663M/s
+BM_AddOrder_No_Match/10000               533 ns          531 ns      1623226 items_per_second=1.88192M/s
+BM_AddOrder_No_Match/100000              552 ns          551 ns      1519180 items_per_second=1.81538M/s
+BM_AddOrder_No_Match/1000000             813 ns          811 ns      1046494 items_per_second=1.23249M/s
+BM_AddOrder_No_Match/15000000            631 ns          629 ns      1000000 items_per_second=1.58987M/s
+BM_AddOrder_Latency/0                    548 ns          547 ns      1000000 items_per_second=1.82767M/s p50=244 p99=1.238k p999=3.653k
+BM_AddOrder_Latency/1000                 549 ns          548 ns      1000000 items_per_second=1.82617M/s p50=243 p99=1.058k p999=3.181k
+BM_AddOrder_Latency/10000                513 ns          512 ns      1000000 items_per_second=1.95189M/s p50=241 p99=951 p999=2.758k
+BM_AddOrder_Latency/100000               562 ns          561 ns      1000000 items_per_second=1.78359M/s p50=256 p99=1.242k p999=3.033k
+BM_AddOrder_Latency/1000000              857 ns          855 ns       920374 items_per_second=1.17004M/s p50=293 p99=1.687k p999=4.408k
+BM_AddOrder_Latency/15000000             715 ns          713 ns      1000000 items_per_second=1.40206M/s p50=267 p99=2.028k p999=3.855k
+BM_RemoveOrder_VaryDepth/0              3.28 ns         3.27 ns    182138462 items_per_second=305.779M/s
+BM_RemoveOrder_VaryDepth/1000           71.5 ns         71.3 ns      9924573 items_per_second=14.0312M/s
+BM_RemoveOrder_VaryDepth/10000          86.2 ns         86.0 ns      7738826 items_per_second=11.6253M/s
+BM_RemoveOrder_VaryDepth/100000         96.2 ns         95.9 ns      7464358 items_per_second=10.4258M/s
+BM_RemoveOrder_VaryDepth/1000000         231 ns          231 ns      3057636 items_per_second=4.33555M/s
+BM_RemoveOrder_VaryDepth/15000000        583 ns          581 ns      6436071 items_per_second=1.72004M/s
+BM_MixedWorkload/0                       506 ns          505 ns      1000000 items_per_second=1.98186M/s
+BM_MixedWorkload/1000                    616 ns          613 ns      1541002 items_per_second=1.63016M/s
+BM_MixedWorkload/10000                   580 ns          579 ns      1441608 items_per_second=1.72788M/s
+BM_MixedWorkload/100000                  633 ns          631 ns      1000000 items_per_second=1.58451M/s
+BM_MixedWorkload/1000000                1296 ns         1292 ns       534217 items_per_second=774.076k/s
+BM_MixedWorkload/15000000               4232 ns         4159 ns      1116944 items_per_second=240.417k/s
+
+========================================
+Testing Compaction Ratio: 0.25
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T08:28:54-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.95, 2.95, 3.04
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   455 ns          454 ns      1773692 items_per_second=2.20206M/s
+BM_AddOrder_No_Match/1000                457 ns          457 ns      1750079 items_per_second=2.19014M/s
+BM_AddOrder_No_Match/10000               474 ns          474 ns      1944245 items_per_second=2.11159M/s
+BM_AddOrder_No_Match/100000              472 ns          464 ns      1752844 items_per_second=2.15418M/s
+BM_AddOrder_No_Match/1000000             561 ns          560 ns      1060944 items_per_second=1.78472M/s
+BM_AddOrder_No_Match/15000000            631 ns          630 ns      1000000 items_per_second=1.58841M/s
+BM_AddOrder_Latency/0                    537 ns          536 ns      1461588 items_per_second=1.86466M/s p50=259 p99=1.415k p999=3.785k
+BM_AddOrder_Latency/1000                 531 ns          530 ns      1458917 items_per_second=1.88669M/s p50=254 p99=1.139k p999=2.803k
+BM_AddOrder_Latency/10000                534 ns          533 ns      1548275 items_per_second=1.87551M/s p50=260 p99=1.257k p999=2.961k
+BM_AddOrder_Latency/100000               550 ns          549 ns      1416864 items_per_second=1.82008M/s p50=263 p99=1.183k p999=3.089k
+BM_AddOrder_Latency/1000000              678 ns          678 ns       978857 items_per_second=1.47596M/s p50=291 p99=1.657k p999=3.331k
+BM_AddOrder_Latency/15000000             691 ns          690 ns      1000000 items_per_second=1.45009M/s p50=265 p99=2.022k p999=3.674k
+BM_RemoveOrder_VaryDepth/0              3.21 ns         3.21 ns    184297825 items_per_second=311.749M/s
+BM_RemoveOrder_VaryDepth/1000           43.0 ns         42.8 ns     15641794 items_per_second=23.387M/s
+BM_RemoveOrder_VaryDepth/10000          61.0 ns         60.9 ns     11147029 items_per_second=16.4259M/s
+BM_RemoveOrder_VaryDepth/100000         70.8 ns         70.7 ns      9676528 items_per_second=14.1486M/s
+BM_RemoveOrder_VaryDepth/1000000         155 ns          155 ns      4535353 items_per_second=6.44339M/s
+BM_RemoveOrder_VaryDepth/15000000        487 ns          486 ns      7573790 items_per_second=2.0566M/s
+BM_MixedWorkload/0                       497 ns          496 ns      1750867 items_per_second=2.01521M/s
+BM_MixedWorkload/1000                    508 ns          507 ns      1891774 items_per_second=1.97182M/s
+BM_MixedWorkload/10000                   509 ns          508 ns      1795765 items_per_second=1.96815M/s
+BM_MixedWorkload/100000                  519 ns          519 ns      1507555 items_per_second=1.92767M/s
+BM_MixedWorkload/1000000                 963 ns          962 ns      1000000 items_per_second=1.03928M/s
+BM_MixedWorkload/15000000               1259 ns         1256 ns      1054884 items_per_second=796.003k/s
+
+========================================
+Testing Compaction Ratio: 0.35
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T08:38:49-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.69, 2.62, 2.80
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   433 ns          433 ns      2027816 items_per_second=2.31166M/s
+BM_AddOrder_No_Match/1000                417 ns          416 ns      1992015 items_per_second=2.4025M/s
+BM_AddOrder_No_Match/10000               431 ns          430 ns      2100658 items_per_second=2.32292M/s
+BM_AddOrder_No_Match/100000              397 ns          397 ns      1885867 items_per_second=2.52182M/s
+BM_AddOrder_No_Match/1000000             459 ns          458 ns      1570131 items_per_second=2.18204M/s
+BM_AddOrder_No_Match/15000000            601 ns          596 ns      1000000 items_per_second=1.67896M/s
+BM_AddOrder_Latency/0                    486 ns          485 ns      1612067 items_per_second=2.06133M/s p50=256 p99=1.284k p999=3.649k
+BM_AddOrder_Latency/1000                 478 ns          476 ns      1567307 items_per_second=2.10198M/s p50=257 p99=1.269k p999=3.946k
+BM_AddOrder_Latency/10000                488 ns          487 ns      1637718 items_per_second=2.05358M/s p50=252 p99=1.178k p999=3.436k
+BM_AddOrder_Latency/100000               507 ns          506 ns      1501118 items_per_second=1.97775M/s p50=262 p99=1.261k p999=3.42k
+BM_AddOrder_Latency/1000000              548 ns          547 ns       977121 items_per_second=1.82802M/s p50=275 p99=1.812k p999=3.734k
+BM_AddOrder_Latency/15000000             712 ns          708 ns      1000000 items_per_second=1.41162M/s p50=271 p99=1.994k p999=4.546k
+BM_RemoveOrder_VaryDepth/0              3.27 ns         3.26 ns    182577896 items_per_second=306.628M/s
+BM_RemoveOrder_VaryDepth/1000           42.4 ns         42.1 ns     16905517 items_per_second=23.7609M/s
+BM_RemoveOrder_VaryDepth/10000          62.1 ns         62.0 ns     10645093 items_per_second=16.1351M/s
+BM_RemoveOrder_VaryDepth/100000         73.1 ns         73.0 ns      9987302 items_per_second=13.7018M/s
+BM_RemoveOrder_VaryDepth/1000000         187 ns          187 ns      3964950 items_per_second=5.34933M/s
+BM_RemoveOrder_VaryDepth/15000000        242 ns          241 ns      7175513 items_per_second=4.14517M/s
+BM_MixedWorkload/0                       451 ns          449 ns      1981964 items_per_second=2.22572M/s
+BM_MixedWorkload/1000                    442 ns          441 ns      1863992 items_per_second=2.26893M/s
+BM_MixedWorkload/10000                   443 ns          442 ns      1942674 items_per_second=2.26276M/s
+BM_MixedWorkload/100000                  445 ns          444 ns      1726221 items_per_second=2.25032M/s
+BM_MixedWorkload/1000000                 580 ns          579 ns      1000000 items_per_second=1.7279M/s
+BM_MixedWorkload/15000000               1240 ns         1237 ns      1037560 items_per_second=808.215k/s
+
+========================================
+Testing Compaction Ratio: 0.45
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T08:48:13-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 3.22, 2.89, 2.84
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   366 ns          365 ns      2054316 items_per_second=2.74032M/s
+BM_AddOrder_No_Match/1000                401 ns          400 ns      2221679 items_per_second=2.50139M/s
+BM_AddOrder_No_Match/10000               376 ns          375 ns      2120088 items_per_second=2.66934M/s
+BM_AddOrder_No_Match/100000              379 ns          377 ns      2045767 items_per_second=2.65031M/s
+BM_AddOrder_No_Match/1000000             391 ns          390 ns      1710688 items_per_second=2.56309M/s
+BM_AddOrder_No_Match/15000000            642 ns          640 ns      1000000 items_per_second=1.56182M/s
+BM_AddOrder_Latency/0                    461 ns          460 ns      1619542 items_per_second=2.17409M/s p50=259 p99=1.266k p999=3.346k
+BM_AddOrder_Latency/1000                 453 ns          452 ns      1620224 items_per_second=2.21196M/s p50=257 p99=1.24k p999=3.359k
+BM_AddOrder_Latency/10000                468 ns          468 ns      1588988 items_per_second=2.13882M/s p50=254 p99=1.242k p999=3.448k
+BM_AddOrder_Latency/100000               478 ns          477 ns      1588321 items_per_second=2.09514M/s p50=262 p99=1.237k p999=3.355k
+BM_AddOrder_Latency/1000000              532 ns          525 ns      1000000 items_per_second=1.90411M/s p50=282 p99=1.805k p999=5.429k
+BM_AddOrder_Latency/15000000             697 ns          696 ns      1000000 items_per_second=1.43634M/s p50=263 p99=1.983k p999=4.116k
+BM_RemoveOrder_VaryDepth/0              3.23 ns         3.23 ns    185670483 items_per_second=309.71M/s
+BM_RemoveOrder_VaryDepth/1000           41.2 ns         41.2 ns     17193652 items_per_second=24.2855M/s
+BM_RemoveOrder_VaryDepth/10000          61.6 ns         61.5 ns     10902747 items_per_second=16.2531M/s
+BM_RemoveOrder_VaryDepth/100000         69.8 ns         69.8 ns      9955060 items_per_second=14.3298M/s
+BM_RemoveOrder_VaryDepth/1000000         162 ns          162 ns      4570354 items_per_second=6.1652M/s
+BM_RemoveOrder_VaryDepth/15000000        241 ns          240 ns      7149496 items_per_second=4.16371M/s
+BM_MixedWorkload/0                       397 ns          396 ns      1999686 items_per_second=2.52565M/s
+BM_MixedWorkload/1000                    398 ns          398 ns      2124592 items_per_second=2.51374M/s
+BM_MixedWorkload/10000                   397 ns          396 ns      2119632 items_per_second=2.5259M/s
+BM_MixedWorkload/100000                  416 ns          416 ns      1847677 items_per_second=2.40663M/s
+BM_MixedWorkload/1000000                 593 ns          592 ns      1000000 items_per_second=1.69041M/s
+BM_MixedWorkload/15000000               1199 ns         1198 ns      1047199 items_per_second=834.777k/s
+
+========================================
+Testing Compaction Ratio: 0.55
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T08:57:05-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.44, 3.15, 3.10
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   360 ns          359 ns      2154416 items_per_second=2.78463M/s
+BM_AddOrder_No_Match/1000                380 ns          374 ns      2216986 items_per_second=2.67081M/s
+BM_AddOrder_No_Match/10000               353 ns          353 ns      2323119 items_per_second=2.83649M/s
+BM_AddOrder_No_Match/100000              362 ns          362 ns      2243295 items_per_second=2.76506M/s
+BM_AddOrder_No_Match/1000000             379 ns          378 ns      1722767 items_per_second=2.64435M/s
+BM_AddOrder_No_Match/15000000            631 ns          630 ns      1000000 items_per_second=1.58726M/s
+BM_AddOrder_Latency/0                    443 ns          442 ns      1642495 items_per_second=2.26071M/s p50=255 p99=1.245k p999=3.298k
+BM_AddOrder_Latency/1000                 462 ns          462 ns      1666952 items_per_second=2.16551M/s p50=257 p99=1.289k p999=3.37k
+BM_AddOrder_Latency/10000                444 ns          444 ns      1699112 items_per_second=2.25354M/s p50=254 p99=1.33k p999=3.217k
+BM_AddOrder_Latency/100000               453 ns          453 ns      1709068 items_per_second=2.20826M/s p50=260 p99=1.473k p999=3.512k
+BM_AddOrder_Latency/1000000              505 ns          504 ns      1000000 items_per_second=1.98432M/s p50=273 p99=1.675k p999=4.054k
+BM_AddOrder_Latency/15000000             669 ns          667 ns      1000000 items_per_second=1.49844M/s p50=264 p99=2.447k p999=6.258k
+BM_RemoveOrder_VaryDepth/0              3.32 ns         3.32 ns    178193676 items_per_second=301.43M/s
+BM_RemoveOrder_VaryDepth/1000           47.0 ns         46.8 ns     14568886 items_per_second=21.3466M/s
+BM_RemoveOrder_VaryDepth/10000          60.6 ns         60.6 ns     11516567 items_per_second=16.5048M/s
+BM_RemoveOrder_VaryDepth/100000         70.1 ns         69.9 ns     10168359 items_per_second=14.2969M/s
+BM_RemoveOrder_VaryDepth/1000000         179 ns          179 ns      4141399 items_per_second=5.59194M/s
+BM_RemoveOrder_VaryDepth/15000000        249 ns          248 ns      6906009 items_per_second=4.02775M/s
+BM_MixedWorkload/0                       383 ns          382 ns      2211970 items_per_second=2.61691M/s
+BM_MixedWorkload/1000                    383 ns          381 ns      2119773 items_per_second=2.6215M/s
+BM_MixedWorkload/10000                   375 ns          374 ns      2114012 items_per_second=2.67127M/s
+BM_MixedWorkload/100000                  391 ns          391 ns      2020581 items_per_second=2.55996M/s
+BM_MixedWorkload/1000000                 528 ns          527 ns      1706905 items_per_second=1.89723M/s
+BM_MixedWorkload/15000000               1209 ns         1208 ns      1068490 items_per_second=828.096k/s
+
+========================================
+Testing Compaction Ratio: 0.65
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T09:05:33-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.09, 2.56, 2.86
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   365 ns          350 ns      2153111 items_per_second=2.85404M/s
+BM_AddOrder_No_Match/1000                341 ns          341 ns      2157537 items_per_second=2.93619M/s
+BM_AddOrder_No_Match/10000               341 ns          340 ns      2157078 items_per_second=2.93698M/s
+BM_AddOrder_No_Match/100000              331 ns          330 ns      2123857 items_per_second=3.02727M/s
+BM_AddOrder_No_Match/1000000             355 ns          353 ns      2015282 items_per_second=2.8306M/s
+BM_AddOrder_No_Match/15000000            628 ns          628 ns      1000000 items_per_second=1.59339M/s
+BM_AddOrder_Latency/0                    421 ns          421 ns      1643355 items_per_second=2.37567M/s p50=256 p99=1.306k p999=3.321k
+BM_AddOrder_Latency/1000                 426 ns          426 ns      1614756 items_per_second=2.34935M/s p50=253 p99=1.255k p999=3.335k
+BM_AddOrder_Latency/10000                426 ns          426 ns      1656640 items_per_second=2.34793M/s p50=256 p99=1.307k p999=3.295k
+BM_AddOrder_Latency/100000               422 ns          422 ns      1675347 items_per_second=2.37243M/s p50=257 p99=1.375k p999=3.229k
+BM_AddOrder_Latency/1000000              437 ns          437 ns      1525327 items_per_second=2.29021M/s p50=264 p99=1.871k p999=3.581k
+BM_AddOrder_Latency/15000000             716 ns          716 ns      1000000 items_per_second=1.39757M/s p50=262 p99=2.442k p999=7.806k
+BM_RemoveOrder_VaryDepth/0              3.19 ns         3.19 ns    185726642 items_per_second=313.895M/s
+BM_RemoveOrder_VaryDepth/1000           40.7 ns         40.6 ns     17359819 items_per_second=24.6169M/s
+BM_RemoveOrder_VaryDepth/10000          59.9 ns         59.8 ns     10922311 items_per_second=16.7139M/s
+BM_RemoveOrder_VaryDepth/100000         71.6 ns         71.3 ns     10193977 items_per_second=14.0191M/s
+BM_RemoveOrder_VaryDepth/1000000         149 ns          149 ns      4847108 items_per_second=6.7291M/s
+BM_RemoveOrder_VaryDepth/15000000        115 ns          114 ns      6936874 items_per_second=8.78671M/s
+BM_MixedWorkload/0                       384 ns          384 ns      2203399 items_per_second=2.60481M/s
+BM_MixedWorkload/1000                    365 ns          364 ns      2130995 items_per_second=2.74522M/s
+BM_MixedWorkload/10000                   365 ns          365 ns      2132307 items_per_second=2.74242M/s
+BM_MixedWorkload/100000                  376 ns          375 ns      1983278 items_per_second=2.66466M/s
+BM_MixedWorkload/1000000                 393 ns          393 ns      1723463 items_per_second=2.54617M/s
+BM_MixedWorkload/15000000               1209 ns         1207 ns      1071975 items_per_second=828.217k/s
+
+========================================
+Testing Compaction Ratio: 0.75
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T09:13:56-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.41, 2.61, 2.75
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   342 ns          342 ns      1991006 items_per_second=2.92364M/s
+BM_AddOrder_No_Match/1000                335 ns          335 ns      2251535 items_per_second=2.98871M/s
+BM_AddOrder_No_Match/10000               331 ns          330 ns      2328722 items_per_second=3.02668M/s
+BM_AddOrder_No_Match/100000              335 ns          335 ns      2282279 items_per_second=2.98601M/s
+BM_AddOrder_No_Match/1000000             348 ns          347 ns      1932645 items_per_second=2.87823M/s
+BM_AddOrder_No_Match/15000000            659 ns          659 ns      1000000 items_per_second=1.51842M/s
+BM_AddOrder_Latency/0                    419 ns          419 ns      1747000 items_per_second=2.38903M/s p50=253 p99=1.412k p999=3.272k
+BM_AddOrder_Latency/1000                 419 ns          418 ns      1785013 items_per_second=2.39112M/s p50=255 p99=1.292k p999=2.903k
+BM_AddOrder_Latency/10000                417 ns          417 ns      1740592 items_per_second=2.39946M/s p50=256 p99=1.307k p999=2.807k
+BM_AddOrder_Latency/100000               423 ns          422 ns      1727981 items_per_second=2.36795M/s p50=259 p99=1.321k p999=3.007k
+BM_AddOrder_Latency/1000000              434 ns          434 ns      1549307 items_per_second=2.30369M/s p50=265 p99=1.721k p999=3.512k
+BM_AddOrder_Latency/15000000             747 ns          746 ns      1000000 items_per_second=1.34044M/s p50=267 p99=2.575k p999=13.623k
+BM_RemoveOrder_VaryDepth/0              3.26 ns         3.25 ns    184637135 items_per_second=307.274M/s
+BM_RemoveOrder_VaryDepth/1000           50.1 ns         49.0 ns     14830508 items_per_second=20.3947M/s
+BM_RemoveOrder_VaryDepth/10000          61.7 ns         61.6 ns     10036130 items_per_second=16.2317M/s
+BM_RemoveOrder_VaryDepth/100000         71.3 ns         71.1 ns      9401273 items_per_second=14.0612M/s
+BM_RemoveOrder_VaryDepth/1000000         153 ns          152 ns      4679019 items_per_second=6.5811M/s
+BM_RemoveOrder_VaryDepth/15000000        234 ns          234 ns      6934401 items_per_second=4.27879M/s
+BM_MixedWorkload/0                       363 ns          362 ns      2233617 items_per_second=2.7608M/s
+BM_MixedWorkload/1000                    349 ns          348 ns      2224433 items_per_second=2.87113M/s
+BM_MixedWorkload/10000                   346 ns          346 ns      2195672 items_per_second=2.89127M/s
+BM_MixedWorkload/100000                  350 ns          350 ns      2029909 items_per_second=2.85728M/s
+BM_MixedWorkload/1000000                 416 ns          415 ns      1764891 items_per_second=2.40825M/s
+BM_MixedWorkload/15000000               1178 ns         1176 ns       849298 items_per_second=850.248k/s
+
+========================================
+Testing Compaction Ratio: 0.85
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T09:22:11-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.13, 2.57, 2.71
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   353 ns          350 ns      2124824 items_per_second=2.85329M/s
+BM_AddOrder_No_Match/1000                335 ns          335 ns      2259617 items_per_second=2.98864M/s
+BM_AddOrder_No_Match/10000               337 ns          336 ns      2295662 items_per_second=2.97667M/s
+BM_AddOrder_No_Match/100000              336 ns          336 ns      2262180 items_per_second=2.98044M/s
+BM_AddOrder_No_Match/1000000             343 ns          343 ns      1979207 items_per_second=2.91872M/s
+BM_AddOrder_No_Match/15000000            653 ns          652 ns      1000000 items_per_second=1.53315M/s
+BM_AddOrder_Latency/0                    420 ns          420 ns      1687743 items_per_second=2.38308M/s p50=257 p99=1.356k p999=3.358k
+BM_AddOrder_Latency/1000                 431 ns          429 ns      1696686 items_per_second=2.33086M/s p50=260 p99=1.365k p999=3.432k
+BM_AddOrder_Latency/10000                420 ns          419 ns      1699190 items_per_second=2.38381M/s p50=257 p99=1.295k p999=3.342k
+BM_AddOrder_Latency/100000               421 ns          420 ns      1685017 items_per_second=2.37903M/s p50=259 p99=1.347k p999=3.325k
+BM_AddOrder_Latency/1000000              437 ns          437 ns      1536102 items_per_second=2.28965M/s p50=265 p99=1.844k p999=3.624k
+BM_AddOrder_Latency/15000000             730 ns          729 ns      1000000 items_per_second=1.37188M/s p50=263 p99=2.543k p999=13.327k
+BM_RemoveOrder_VaryDepth/0              3.21 ns         3.20 ns    186498569 items_per_second=312.147M/s
+BM_RemoveOrder_VaryDepth/1000           29.5 ns         29.4 ns     23543657 items_per_second=34.0251M/s
+BM_RemoveOrder_VaryDepth/10000          46.6 ns         46.5 ns     13943390 items_per_second=21.5073M/s
+BM_RemoveOrder_VaryDepth/100000         58.4 ns         58.3 ns     12390916 items_per_second=17.1445M/s
+BM_RemoveOrder_VaryDepth/1000000        78.4 ns         78.3 ns      9545498 items_per_second=12.7762M/s
+BM_RemoveOrder_VaryDepth/15000000        115 ns          115 ns      6982056 items_per_second=8.69316M/s
+BM_MixedWorkload/0                       349 ns          349 ns      2148478 items_per_second=2.86504M/s
+BM_MixedWorkload/1000                    351 ns          351 ns      2147555 items_per_second=2.85269M/s
+BM_MixedWorkload/10000                   357 ns          357 ns      2197568 items_per_second=2.80302M/s
+BM_MixedWorkload/100000                  351 ns          351 ns      2103953 items_per_second=2.85036M/s
+BM_MixedWorkload/1000000                 404 ns          404 ns      1754434 items_per_second=2.47823M/s
+BM_MixedWorkload/15000000               1231 ns         1230 ns      1052347 items_per_second=813.251k/s
+
+========================================
+Testing Compaction Ratio: 0.95
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-14T09:30:25-05:00
+Running ../../build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.33, 2.42, 2.57
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   342 ns          341 ns      2131910 items_per_second=2.9291M/s
+BM_AddOrder_No_Match/1000                337 ns          331 ns      2305734 items_per_second=3.01762M/s
+BM_AddOrder_No_Match/10000               331 ns          330 ns      2319809 items_per_second=3.02575M/s
+BM_AddOrder_No_Match/100000              337 ns          337 ns      2247573 items_per_second=2.96843M/s
+BM_AddOrder_No_Match/1000000             348 ns          348 ns      1912574 items_per_second=2.87743M/s
+BM_AddOrder_No_Match/15000000            659 ns          658 ns      1000000 items_per_second=1.51906M/s
+BM_AddOrder_Latency/0                    415 ns          415 ns      1755037 items_per_second=2.41202M/s p50=252 p99=1.274k p999=2.894k
+BM_AddOrder_Latency/1000                 415 ns          415 ns      1769822 items_per_second=2.40999M/s p50=252 p99=1.313k p999=2.862k
+BM_AddOrder_Latency/10000                424 ns          423 ns      1729616 items_per_second=2.36278M/s p50=259 p99=1.333k p999=3.14k
+BM_AddOrder_Latency/100000               419 ns          418 ns      1752804 items_per_second=2.39176M/s p50=259 p99=1.382k p999=3.194k
+BM_AddOrder_Latency/1000000              436 ns          436 ns      1557591 items_per_second=2.29408M/s p50=265 p99=1.728k p999=3.57k
+BM_AddOrder_Latency/15000000             728 ns          727 ns      1000000 items_per_second=1.37563M/s p50=265 p99=2.579k p999=13.252k
+BM_RemoveOrder_VaryDepth/0              3.18 ns         3.18 ns    184911731 items_per_second=314.831M/s
+BM_RemoveOrder_VaryDepth/1000           28.9 ns         28.8 ns     24407082 items_per_second=34.6888M/s
+BM_RemoveOrder_VaryDepth/10000          45.8 ns         45.7 ns     14872669 items_per_second=21.8756M/s
+BM_RemoveOrder_VaryDepth/100000         58.4 ns         58.3 ns     12116387 items_per_second=17.1543M/s
+BM_RemoveOrder_VaryDepth/1000000        77.6 ns         77.5 ns      9562450 items_per_second=12.9034M/s
+BM_RemoveOrder_VaryDepth/15000000        114 ns          114 ns      6988399 items_per_second=8.75073M/s
+BM_MixedWorkload/0                       356 ns          356 ns      2204363 items_per_second=2.81155M/s
+BM_MixedWorkload/1000                    361 ns          361 ns      2201528 items_per_second=2.7736M/s
+BM_MixedWorkload/10000                   365 ns          364 ns      2194474 items_per_second=2.74518M/s
+BM_MixedWorkload/100000                  354 ns          353 ns      2102172 items_per_second=2.82926M/s
+BM_MixedWorkload/1000000                 398 ns          397 ns      1745618 items_per_second=2.51707M/s
+BM_MixedWorkload/15000000               1214 ns         1213 ns      1054185 items_per_second=824.672k/s
+
+Restoring original ratio: 0.15
+========================================
+Study complete! Results: ../results/compaction_ratios_run2
+Original ratio restored: 0.15

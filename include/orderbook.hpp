@@ -8,6 +8,8 @@
 #include "order.hpp"
 
 class OrderBook {
+    // TODO: Critical Design Flaw: Trader has no way of accesing order_id after creating order. Create Trader struct and
+    // add order-id to some optimal DS that trader has access to.
 private:
     struct OrderLocation {
         Side side;
@@ -37,6 +39,7 @@ private:
      * @param map map to remove filled orders from
      */
     void compact_orderbook_helper(std::map<int32_t, std::vector<Order>> &map);
+
 public:
     OrderBook();
 
@@ -48,11 +51,18 @@ public:
     std::vector<Trade> add_order(Order &order);
 
     /**
-     * @brief Scans and removes order if it exists
+     * @brief Scans and removes order if it exists, to be used by traders with no access to Order object.
      * @param order_id order_id
      * @return True if order found and removed, false if order not found
      */
     bool remove_order(uint32_t order_id);
+
+    /**
+     * @brief Method used by internal algorithm with access to Order object, skips expensive lookup in order_lookup.
+     * @param order order object to be deleted
+     * @return True if order found and removed, false if order not found.
+     */
+    void mark_order_deleted(Order *order);
 
     /**
     * @brief Shows executed trades
@@ -61,7 +71,7 @@ public:
     const std::vector<Trade>& show_trades() const;
 
     /**
-     * @brief Removes filled orders from orderbook.
+     * @brief Removes filled/deleted orders from orderbook.
      */
     void compact_orderbook();
 };
