@@ -81,13 +81,21 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
         order.quantity -= new_trade.quantity;
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
-            existing_order->deleted_or_filled = true;
-            order_lookup.erase(existing_order->order_id);
-            remove_order(existing_order->get_order_id());
+            mark_order_deleted(existing_order);
         }
 
         trades.push_back(new_trade);
         executed_trades->push_back(new_trade);
+    }
+}
+
+void OrderBook::mark_order_deleted(Order *order) {
+    order->deleted_or_filled = true;
+    order_lookup.erase(order->order_id);
+    deleted_orders_count++;
+
+    if (double(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
+        compact_orderbook();
     }
 }
 
@@ -98,14 +106,9 @@ bool OrderBook::remove_order(uint32_t order_id) {
     OrderLocation order_location = it->second;
     auto &target_map = (order_location.side == Side::Buy) ? bids : asks;
     auto &orders_at_price = target_map[order_location.price];
+    Order *removing_order = &orders_at_price[order_location.index];
 
-    orders_at_price[order_location.index].deleted_or_filled = true;
-    order_lookup.erase(it);
-    deleted_orders_count++;
-
-    if (double(deleted_orders_count) / total_orders_count > COMPACTION_RATIO) {
-        compact_orderbook();
-    }
+    mark_order_deleted(removing_order);
 
     return true;
 }
