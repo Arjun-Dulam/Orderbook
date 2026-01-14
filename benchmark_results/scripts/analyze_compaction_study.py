@@ -29,8 +29,9 @@ def parse_benchmark_results(file_path):
 
             # Parse benchmark lines with throughput
             # Format: BM_AddOrder_No_Match/1000   337 ns   337 ns   2202227 items_per_second=2.97052M/s
+            # Note: Times can be decimal (3.28 ns) for fast operations
             bench_match = re.search(
-                r'(BM_\w+)/(\d+)\s+\d+\s+ns\s+\d+\s+ns\s+\d+\s+items_per_second=([\d.]+)([MK])/s',
+                r'(BM_\w+)/(\d+)\s+[\d.]+\s+ns\s+[\d.]+\s+ns\s+\d+\s+items_per_second=([\d.]+)([MK])/s',
                 line
             )
             if bench_match:
@@ -69,6 +70,41 @@ def parse_benchmark_results(file_path):
                     latency_data[benchmark_name][current_ratio][depth]['p999'] = p999
 
     return throughput_data, latency_data
+
+def consolidate_benchmarks(throughput_data, latency_data):
+    """Consolidate benchmarks into 3 core operations."""
+    # Mapping from raw benchmark names to clean display names
+    name_mapping = {
+        'BM_AddOrder_No_Match': 'Add Order',
+        'BM_AddOrder_Latency': 'Add Order',
+        'BM_RemoveOrder_VaryDepth': 'Remove Order',
+        'BM_MixedWorkload': 'Mixed Workload'
+    }
+
+    consolidated_throughput = defaultdict(lambda: defaultdict(dict))
+    consolidated_latency = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
+
+    # Consolidate throughput data - prefer No_Match over Latency for Add Order
+    for benchmark_name, ratios in throughput_data.items():
+        clean_name = name_mapping.get(benchmark_name, benchmark_name)
+
+        # For Add Order, prefer No_Match data (skip Latency throughput)
+        if benchmark_name == 'BM_AddOrder_Latency' and 'BM_AddOrder_No_Match' in throughput_data:
+            continue
+
+        for ratio, depths in ratios.items():
+            for depth, value in depths.items():
+                consolidated_throughput[clean_name][ratio][depth] = value
+
+    # Consolidate latency data (only from BM_AddOrder_Latency)
+    for benchmark_name, ratios in latency_data.items():
+        clean_name = name_mapping.get(benchmark_name, benchmark_name)
+        for ratio, depths in ratios.items():
+            for depth, percentiles in depths.items():
+                for percentile, value in percentiles.items():
+                    consolidated_latency[clean_name][ratio][depth][percentile] = value
+
+    return dict(consolidated_throughput), dict(consolidated_latency)
 
 def create_throughput_graphs(data, output_dir):
     """Generate throughput performance visualization graphs."""
@@ -205,15 +241,19 @@ if __name__ == "__main__":
 
     # Parse results
     print(f"\nParsing: {results_file}")
-    throughput_data, latency_data = parse_benchmark_results(results_file)
+    raw_throughput, raw_latency = parse_benchmark_results(results_file)
 
-    if not throughput_data:
+    if not raw_throughput:
         print("ERROR: No benchmark data found in results file!")
         sys.exit(1)
 
-    print(f"Found {len(throughput_data)} benchmark types with throughput data")
+    # Consolidate into 3 core operations
+    print(f"Consolidating {len(raw_throughput)} benchmarks into 3 core operations...")
+    throughput_data, latency_data = consolidate_benchmarks(raw_throughput, raw_latency)
+
+    print(f"Operations: {', '.join(throughput_data.keys())}")
     if latency_data:
-        print(f"Found {len(latency_data)} benchmark types with latency data")
+        print(f"Latency data available for: {', '.join(latency_data.keys())}")
 
     # Generate throughput graphs
     print(f"\nGenerating throughput graphs → {output_dir}/")
