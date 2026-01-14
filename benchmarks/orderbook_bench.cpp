@@ -41,7 +41,8 @@ BENCHMARK(BM_AddOrder_No_Match)
     -> Arg(1000)
     -> Arg(10000)
     -> Arg(100000)
-    -> Arg(1000000);
+    -> Arg(1000000)
+    -> Arg(NUM_ORDERS);
 
 static void BM_AddOrder_Latency(benchmark::State &state) {
     OrderBook order_book;
@@ -88,7 +89,8 @@ BENCHMARK(BM_AddOrder_Latency)
     -> Arg(1000)
     -> Arg(10000)
     -> Arg(100000)
-    -> Arg(1000000);
+    -> Arg(1000000)
+    -> Arg(NUM_ORDERS);
 
 
 static void BM_RemoveOrder_VaryDepth(benchmark::State &state) {
@@ -133,7 +135,6 @@ BENCHMARK(BM_RemoveOrder_VaryDepth)
     -> Arg(10000000)
     -> Arg(NUM_ORDERS);
 
-/**
 static void BM_MixedWorkload(benchmark::State &state) {
     OrderBook order_book;
     OrderGenerator order_gen(MarketConfig{});
@@ -157,6 +158,5 @@ static void BM_MixedWorkload(benchmark::State &state) {
 
 }
 
-**/
 
 BENCHMARK_MAIN();
