@@ -191,9 +191,9 @@ def print_summary(data):
             print(f"  {depth_label:20} → Best: Ratio {best_ratio:.2f} ({best_throughput:.2f} M/s)")
 
 if __name__ == "__main__":
-    # Configuration - paths relative to script location
-    results_file = ""
-    output_dir = "../results"
+    # Configuration - paths relative to project root
+    results_file = "benchmark_results/results/compaction_ratios_run2"
+    output_dir = "benchmark_results/results"
 
     print("Compaction Ratio Performance Analysis")
     print("=" * 60)
