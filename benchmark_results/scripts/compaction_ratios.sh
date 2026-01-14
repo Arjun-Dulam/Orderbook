@@ -3,7 +3,7 @@ set -e  # Exit on error
 
 # Configuration
 RATIOS=(0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95)
-OUTPUT_FILE="compaction_study_results.log"
+OUTPUT_FILE="../results/compaction_ratios_run2"
 CPP_FILE="../../src/orderbook.cpp"
 BUILD_DIR="../../build"
 
@@ -29,7 +29,7 @@ do
 
     # Run benchmarks
     echo "Running benchmarks..." | tee -a "$OUTPUT_FILE"
-    "$BUILD_DIR"/OrderBookBenchmark --benchmark_filter="BM_AddOrder_No_Match|BM_RemoveOrder_VaryDepth" >> "$OUTPUT_FILE" 2>&1
+    "$BUILD_DIR"/OrderBookBenchmark >> "$OUTPUT_FILE" 2>&1
 
     echo "" >> "$OUTPUT_FILE"
 done
