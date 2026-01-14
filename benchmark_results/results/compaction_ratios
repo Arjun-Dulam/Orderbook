@@ -1,0 +1,259 @@
+Starting Compaction Study - Tue Jan 13 21:16:51 EST 2026
+Testing ratios: 0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95
+
+========================================
+Testing Compaction Ratio: 0.15
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:16:59-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 5.90, 4.55, 3.78
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   618 ns          597 ns      1494695 items_per_second=1.67561M/s
+BM_AddOrder_No_Match/1000                545 ns          541 ns      1555158 items_per_second=1.84691M/s
+BM_AddOrder_No_Match/10000               554 ns          553 ns      1669238 items_per_second=1.80783M/s
+BM_AddOrder_No_Match/100000              547 ns          546 ns      1517882 items_per_second=1.83222M/s
+BM_AddOrder_No_Match/1000000             776 ns          773 ns      1083021 items_per_second=1.29431M/s
+BM_RemoveOrder_VaryDepth/10000           104 ns         99.3 ns      7492641 items_per_second=10.0672M/s
+BM_RemoveOrder_VaryDepth/100000          118 ns          115 ns      6015555 items_per_second=8.71657M/s
+BM_RemoveOrder_VaryDepth/1000000         230 ns          230 ns      3063940 items_per_second=4.35337M/s
+BM_RemoveOrder_VaryDepth/10000000        460 ns          458 ns      8201043 items_per_second=2.18148M/s
+BM_RemoveOrder_VaryDepth/15000000        557 ns          552 ns      5101669 items_per_second=1.81111M/s
+
+========================================
+Testing Compaction Ratio: 0.25
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:22:42-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 3.69, 4.48, 4.05
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   510 ns          502 ns      1749694 items_per_second=1.99105M/s
+BM_AddOrder_No_Match/1000                512 ns          480 ns      1779301 items_per_second=2.08517M/s
+BM_AddOrder_No_Match/10000               463 ns          462 ns      1928757 items_per_second=2.1638M/s
+BM_AddOrder_No_Match/100000              466 ns          465 ns      1763153 items_per_second=2.14945M/s
+BM_AddOrder_No_Match/1000000             542 ns          541 ns      1089155 items_per_second=1.84785M/s
+BM_RemoveOrder_VaryDepth/10000          61.0 ns         60.9 ns     11083139 items_per_second=16.4145M/s
+BM_RemoveOrder_VaryDepth/100000         68.1 ns         68.1 ns     10211971 items_per_second=14.6941M/s
+BM_RemoveOrder_VaryDepth/1000000         136 ns          135 ns      5311239 items_per_second=7.38493M/s
+BM_RemoveOrder_VaryDepth/10000000        306 ns          287 ns      7122942 items_per_second=3.47941M/s
+BM_RemoveOrder_VaryDepth/15000000        598 ns          589 ns      6834736 items_per_second=1.69695M/s
+
+========================================
+Testing Compaction Ratio: 0.35
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:27:34-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 5.78, 5.31, 4.54
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   438 ns          437 ns      2032379 items_per_second=2.28684M/s
+BM_AddOrder_No_Match/1000                425 ns          424 ns      1940703 items_per_second=2.36042M/s
+BM_AddOrder_No_Match/10000               397 ns          395 ns      2028333 items_per_second=2.52859M/s
+BM_AddOrder_No_Match/100000              414 ns          409 ns      1683631 items_per_second=2.44782M/s
+BM_AddOrder_No_Match/1000000             462 ns          461 ns      1527134 items_per_second=2.16853M/s
+BM_RemoveOrder_VaryDepth/10000          60.3 ns         60.2 ns     11687509 items_per_second=16.6172M/s
+BM_RemoveOrder_VaryDepth/100000         70.0 ns         69.9 ns     10385294 items_per_second=14.3115M/s
+BM_RemoveOrder_VaryDepth/1000000         184 ns          184 ns      4119901 items_per_second=5.4486M/s
+BM_RemoveOrder_VaryDepth/10000000        209 ns          209 ns      8455025 items_per_second=4.7851M/s
+BM_RemoveOrder_VaryDepth/15000000        232 ns          232 ns      7227970 items_per_second=4.30858M/s
+
+========================================
+Testing Compaction Ratio: 0.45
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:31:41-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 3.12, 4.08, 4.18
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   359 ns          358 ns      1837598 items_per_second=2.79375M/s
+BM_AddOrder_No_Match/1000                431 ns          427 ns      2135090 items_per_second=2.34143M/s
+BM_AddOrder_No_Match/10000               373 ns          371 ns      2050663 items_per_second=2.69347M/s
+BM_AddOrder_No_Match/100000              395 ns          383 ns      2077281 items_per_second=2.612M/s
+BM_AddOrder_No_Match/1000000             373 ns          373 ns      1644559 items_per_second=2.68225M/s
+BM_RemoveOrder_VaryDepth/10000          61.2 ns         61.1 ns     11140643 items_per_second=16.3783M/s
+BM_RemoveOrder_VaryDepth/100000         69.1 ns         69.0 ns     10540899 items_per_second=14.5016M/s
+BM_RemoveOrder_VaryDepth/1000000         162 ns          162 ns      4340789 items_per_second=6.18201M/s
+BM_RemoveOrder_VaryDepth/10000000        449 ns          426 ns      8056163 items_per_second=2.34833M/s
+BM_RemoveOrder_VaryDepth/15000000        251 ns          251 ns      6919458 items_per_second=3.98984M/s
+
+========================================
+Testing Compaction Ratio: 0.55
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:35:40-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 3.11, 4.01, 4.16
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   360 ns          359 ns      2079966 items_per_second=2.78524M/s
+BM_AddOrder_No_Match/1000                363 ns          362 ns      2193099 items_per_second=2.76235M/s
+BM_AddOrder_No_Match/10000               374 ns          371 ns      2206684 items_per_second=2.69456M/s
+BM_AddOrder_No_Match/100000              355 ns          354 ns      2274056 items_per_second=2.82377M/s
+BM_AddOrder_No_Match/1000000             377 ns          376 ns      1728395 items_per_second=2.65945M/s
+BM_RemoveOrder_VaryDepth/10000          60.4 ns         60.3 ns     10946736 items_per_second=16.5904M/s
+BM_RemoveOrder_VaryDepth/100000         67.9 ns         67.8 ns     10348294 items_per_second=14.7405M/s
+BM_RemoveOrder_VaryDepth/1000000         172 ns          172 ns      4250900 items_per_second=5.82477M/s
+BM_RemoveOrder_VaryDepth/10000000       99.1 ns         99.0 ns      8643363 items_per_second=10.1045M/s
+BM_RemoveOrder_VaryDepth/15000000        244 ns          240 ns      7059156 items_per_second=4.16537M/s
+
+========================================
+Testing Compaction Ratio: 0.65
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:39:19-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.75, 3.39, 3.85
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   335 ns          334 ns      2161214 items_per_second=2.99386M/s
+BM_AddOrder_No_Match/1000                343 ns          341 ns      2213726 items_per_second=2.92828M/s
+BM_AddOrder_No_Match/10000               332 ns          332 ns      2286431 items_per_second=3.01652M/s
+BM_AddOrder_No_Match/100000              335 ns          334 ns      2242950 items_per_second=2.99656M/s
+BM_AddOrder_No_Match/1000000             352 ns          351 ns      1932159 items_per_second=2.84517M/s
+BM_RemoveOrder_VaryDepth/10000          60.5 ns         60.4 ns     10759961 items_per_second=16.5639M/s
+BM_RemoveOrder_VaryDepth/100000         70.0 ns         69.9 ns      9591538 items_per_second=14.3141M/s
+BM_RemoveOrder_VaryDepth/1000000         147 ns          146 ns      4595588 items_per_second=6.82619M/s
+BM_RemoveOrder_VaryDepth/10000000        104 ns          104 ns      8659615 items_per_second=9.62995M/s
+BM_RemoveOrder_VaryDepth/15000000        114 ns          114 ns      6745688 items_per_second=8.79501M/s
+
+========================================
+Testing Compaction Ratio: 0.75
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:42:55-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.59, 3.07, 3.61
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   335 ns          334 ns      2160287 items_per_second=2.99342M/s
+BM_AddOrder_No_Match/1000                335 ns          335 ns      2309941 items_per_second=2.98618M/s
+BM_AddOrder_No_Match/10000               333 ns          332 ns      2339924 items_per_second=3.00903M/s
+BM_AddOrder_No_Match/100000              332 ns          331 ns      2361164 items_per_second=3.01839M/s
+BM_AddOrder_No_Match/1000000             351 ns          350 ns      1976318 items_per_second=2.85495M/s
+BM_RemoveOrder_VaryDepth/10000          61.0 ns         60.8 ns     10994707 items_per_second=16.4352M/s
+BM_RemoveOrder_VaryDepth/100000         68.7 ns         68.5 ns     10274777 items_per_second=14.5905M/s
+BM_RemoveOrder_VaryDepth/1000000         153 ns          152 ns      5012101 items_per_second=6.55798M/s
+BM_RemoveOrder_VaryDepth/10000000        235 ns          234 ns      8253841 items_per_second=4.26972M/s
+BM_RemoveOrder_VaryDepth/15000000        239 ns          238 ns      6990214 items_per_second=4.19995M/s
+
+========================================
+Testing Compaction Ratio: 0.85
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:46:24-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 3.30, 3.05, 3.47
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   336 ns          335 ns      2172631 items_per_second=2.98608M/s
+BM_AddOrder_No_Match/1000                335 ns          335 ns      2316653 items_per_second=2.98742M/s
+BM_AddOrder_No_Match/10000               353 ns          349 ns      2159041 items_per_second=2.86533M/s
+BM_AddOrder_No_Match/100000              334 ns          334 ns      2251340 items_per_second=2.99534M/s
+BM_AddOrder_No_Match/1000000             360 ns          348 ns      1927822 items_per_second=2.8749M/s
+BM_RemoveOrder_VaryDepth/10000          46.3 ns         46.2 ns     15119378 items_per_second=21.6454M/s
+BM_RemoveOrder_VaryDepth/100000         56.8 ns         56.7 ns     12687365 items_per_second=17.6422M/s
+BM_RemoveOrder_VaryDepth/1000000        77.1 ns         76.3 ns      9938946 items_per_second=13.1053M/s
+BM_RemoveOrder_VaryDepth/10000000       99.8 ns         99.7 ns      8594546 items_per_second=10.034M/s
+BM_RemoveOrder_VaryDepth/15000000        117 ns          114 ns      7251481 items_per_second=8.75497M/s
+
+========================================
+Testing Compaction Ratio: 0.95
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-13T21:49:52-05:00
+Running ./OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 2.77, 2.90, 3.32
+--------------------------------------------------------------------------------------------
+Benchmark                                  Time             CPU   Iterations UserCounters...
+--------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                   336 ns          336 ns      2146271 items_per_second=2.97888M/s
+BM_AddOrder_No_Match/1000                338 ns          337 ns      2315542 items_per_second=2.96868M/s
+BM_AddOrder_No_Match/10000               336 ns          335 ns      2311749 items_per_second=2.98786M/s
+BM_AddOrder_No_Match/100000              331 ns          331 ns      2287769 items_per_second=3.02289M/s
+BM_AddOrder_No_Match/1000000             344 ns          343 ns      1960944 items_per_second=2.91431M/s
+BM_RemoveOrder_VaryDepth/10000          46.0 ns         45.9 ns     13915948 items_per_second=21.8041M/s
+BM_RemoveOrder_VaryDepth/100000         56.3 ns         56.1 ns     11582500 items_per_second=17.8117M/s
+BM_RemoveOrder_VaryDepth/1000000        77.6 ns         77.4 ns      9210890 items_per_second=12.9126M/s
+BM_RemoveOrder_VaryDepth/10000000        104 ns          104 ns      7489114 items_per_second=9.64067M/s
+BM_RemoveOrder_VaryDepth/15000000        106 ns          105 ns      6751739 items_per_second=9.49707M/s
+
+Restoring original ratio: 0.25
+========================================
+Study complete! Results: compaction_study_results.log
+Original ratio restored: 0.25
