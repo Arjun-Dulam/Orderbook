@@ -12,9 +12,10 @@ import os
 
 def parse_benchmark_results(file_path):
     """Parse Google Benchmark output and extract performance data."""
-    data = defaultdict(lambda: defaultdict(dict))
+    throughput_data = defaultdict(lambda: defaultdict(dict))
+    latency_data = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
     current_ratio = None
-    
+
     with open(file_path, 'r') as f:
         for line in f:
             # Extract current compaction ratio
@@ -22,40 +23,61 @@ def parse_benchmark_results(file_path):
             if ratio_match:
                 current_ratio = float(ratio_match.group(1))
                 continue
-            
-            # Parse benchmark lines
+
+            if current_ratio is None:
+                continue
+
+            # Parse benchmark lines with throughput
             # Format: BM_AddOrder_No_Match/1000   337 ns   337 ns   2202227 items_per_second=2.97052M/s
             bench_match = re.search(
                 r'(BM_\w+)/(\d+)\s+\d+\s+ns\s+\d+\s+ns\s+\d+\s+items_per_second=([\d.]+)([MK])/s',
                 line
             )
-            if bench_match and current_ratio is not None:
+            if bench_match:
                 benchmark_name = bench_match.group(1)
                 depth = int(bench_match.group(2))
                 throughput = float(bench_match.group(3))
                 unit = bench_match.group(4)
-                
+
                 # Convert to millions/sec
                 if unit == 'K':
                     throughput /= 1000
-                
-                data[benchmark_name][current_ratio][depth] = throughput
-    
-    return data
 
-def create_graphs(data, output_dir):
-    """Generate performance visualization graphs."""
-    
-    # Ensure output directory exists
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-        print(f"Created directory: {output_dir}")
-    
+                throughput_data[benchmark_name][current_ratio][depth] = throughput
+
+                # Check for latency percentiles in the same line
+                p50_match = re.search(r'p50=([\d.]+)k?', line)
+                p99_match = re.search(r'p99=([\d.]+)k?', line)
+                p999_match = re.search(r'p999=([\d.]+)k?', line)
+
+                if p50_match:
+                    p50 = float(p50_match.group(1))
+                    if 'k' in p50_match.group(0):
+                        p50 *= 1000
+                    latency_data[benchmark_name][current_ratio][depth]['p50'] = p50
+
+                if p99_match:
+                    p99 = float(p99_match.group(1))
+                    if 'k' in p99_match.group(0):
+                        p99 *= 1000
+                    latency_data[benchmark_name][current_ratio][depth]['p99'] = p99
+
+                if p999_match:
+                    p999 = float(p999_match.group(1))
+                    if 'k' in p999_match.group(0):
+                        p999 *= 1000
+                    latency_data[benchmark_name][current_ratio][depth]['p999'] = p999
+
+    return throughput_data, latency_data
+
+def create_throughput_graphs(data, output_dir):
+    """Generate throughput performance visualization graphs."""
+
     for benchmark_name, ratios in data.items():
         # Extract all unique depths and ratios
         all_depths = sorted(set(depth for ratio_data in ratios.values() for depth in ratio_data.keys()))
         all_ratios = sorted(ratios.keys())
-        
+
         # Graph 1: Throughput vs Compaction Ratio (separate line per depth)
         plt.figure(figsize=(12, 7))
         for depth in all_depths:
@@ -65,23 +87,23 @@ def create_graphs(data, output_dir):
                 if depth in ratios[ratio]:
                     ratio_vals.append(ratio)
                     throughput_vals.append(ratios[ratio][depth])
-            
+
             if ratio_vals:
                 label = f"{depth:,} orders" if depth > 0 else "cold start"
                 plt.plot(ratio_vals, throughput_vals, marker='o', linewidth=2, label=label)
-        
+
         plt.xlabel('Compaction Ratio', fontsize=12)
         plt.ylabel('Throughput (M ops/sec)', fontsize=12)
         plt.title(f'{benchmark_name}: Throughput vs Compaction Ratio', fontsize=14, fontweight='bold')
         plt.legend(loc='best', fontsize=10)
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
-        
+
         output_file = f"{output_dir}/{benchmark_name}_ratio_comparison.png"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         print(f"✓ Saved: {output_file}")
         plt.close()
-        
+
         # Graph 2: Throughput vs Depth (separate line per ratio)
         plt.figure(figsize=(12, 7))
         for ratio in all_ratios:
@@ -91,10 +113,10 @@ def create_graphs(data, output_dir):
                 if depth in ratios[ratio]:
                     depths.append(depth)
                     throughputs.append(ratios[ratio][depth])
-            
+
             if depths:
                 plt.plot(depths, throughputs, marker='o', linewidth=2, label=f"Ratio {ratio:.2f}")
-        
+
         plt.xlabel('Order Book Depth', fontsize=12)
         plt.ylabel('Throughput (M ops/sec)', fontsize=12)
         plt.title(f'{benchmark_name}: Throughput vs Depth', fontsize=14, fontweight='bold')
@@ -102,11 +124,46 @@ def create_graphs(data, output_dir):
         plt.legend(loc='best', fontsize=10)
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
-        
+
         output_file = f"{output_dir}/{benchmark_name}_depth_comparison.png"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         print(f"✓ Saved: {output_file}")
         plt.close()
+
+def create_latency_graphs(latency_data, output_dir):
+    """Generate latency percentile visualization graphs."""
+
+    for benchmark_name, ratios in latency_data.items():
+        all_depths = sorted(set(depth for ratio_data in ratios.values() for depth in ratio_data.keys()))
+        all_ratios = sorted(ratios.keys())
+
+        # Create graphs for each percentile
+        for percentile in ['p50', 'p99', 'p999']:
+            # Graph: Percentile vs Compaction Ratio
+            plt.figure(figsize=(12, 7))
+            for depth in all_depths:
+                ratio_vals = []
+                latency_vals = []
+                for ratio in all_ratios:
+                    if depth in ratios[ratio] and percentile in ratios[ratio][depth]:
+                        ratio_vals.append(ratio)
+                        latency_vals.append(ratios[ratio][depth][percentile])
+
+                if ratio_vals:
+                    label = f"{depth:,} orders" if depth > 0 else "cold start"
+                    plt.plot(ratio_vals, latency_vals, marker='o', linewidth=2, label=label)
+
+            plt.xlabel('Compaction Ratio', fontsize=12)
+            plt.ylabel(f'{percentile.upper()} Latency (ns)', fontsize=12)
+            plt.title(f'{benchmark_name}: {percentile.upper()} Latency vs Compaction Ratio', fontsize=14, fontweight='bold')
+            plt.legend(loc='best', fontsize=10)
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+
+            output_file = f"{output_dir}/{benchmark_name}_{percentile}_ratio_comparison.png"
+            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            print(f"✓ Saved: {output_file}")
+            plt.close()
 
 def print_summary(data):
     """Print summary statistics."""
@@ -134,30 +191,42 @@ def print_summary(data):
             print(f"  {depth_label:20} → Best: Ratio {best_ratio:.2f} ({best_throughput:.2f} M/s)")
 
 if __name__ == "__main__":
-    # Configuration
-    results_file = "benchmark_results/results/compaction_ratios"
-    output_dir = "benchmark_results/results/"
-    
+    # Configuration - paths relative to script location
+    results_file = "../results/compaction_ratios_run2"
+    output_dir = "../results"
+
     print("Compaction Ratio Performance Analysis")
     print("=" * 60)
-    
+
+    # Ensure output directory exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        print(f"Created directory: {output_dir}")
+
     # Parse results
     print(f"\nParsing: {results_file}")
-    data = parse_benchmark_results(results_file)
-    
-    if not data:
+    throughput_data, latency_data = parse_benchmark_results(results_file)
+
+    if not throughput_data:
         print("ERROR: No benchmark data found in results file!")
         sys.exit(1)
-    
-    print(f"Found {len(data)} benchmark types")
-    
-    # Generate graphs
-    print(f"\nGenerating graphs → {output_dir}/")
-    create_graphs(data, output_dir)
-    
+
+    print(f"Found {len(throughput_data)} benchmark types with throughput data")
+    if latency_data:
+        print(f"Found {len(latency_data)} benchmark types with latency data")
+
+    # Generate throughput graphs
+    print(f"\nGenerating throughput graphs → {output_dir}/")
+    create_throughput_graphs(throughput_data, output_dir)
+
+    # Generate latency graphs if available
+    if latency_data:
+        print(f"\nGenerating latency graphs → {output_dir}/")
+        create_latency_graphs(latency_data, output_dir)
+
     # Print summary
-    print_summary(data)
-    
+    print_summary(throughput_data)
+
     print("\n" + "="*60)
     print("Analysis complete!")
     print("="*60)
