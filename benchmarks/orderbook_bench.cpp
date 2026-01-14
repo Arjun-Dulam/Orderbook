@@ -96,7 +96,7 @@ static void BM_RemoveOrder_VaryDepth(benchmark::State &state) {
     MarketConfig cfg;
     OrderGenerator order_generator(cfg);
 
-     std::vector<uint32_t> orders_to_remove;
+    std::vector<uint32_t> orders_to_remove;
     orders_to_remove.reserve(state.range(0) / 3 + 1);
 
     for (int i = 0; i < state.range(0); i++) {
@@ -116,11 +116,10 @@ static void BM_RemoveOrder_VaryDepth(benchmark::State &state) {
         if (orderIdx >= orders_to_remove.size() - 1) {
             state.PauseTiming();
             orderIdx = 0;
-            // order_book = order_book_backup;
+            order_book = order_book_backup;
             state.ResumeTiming();
         }
-        bool removal = order_book.remove_order(orders_to_remove[orderIdx]);
-        benchmark::DoNotOptimize(removal);
+        order_book.remove_order(orders_to_remove[orderIdx]);
 
         orderIdx++;
     }
@@ -131,8 +130,8 @@ BENCHMARK(BM_RemoveOrder_VaryDepth)
     -> Arg(10000)
     -> Arg(100000)
     -> Arg(1000000)
-    -> Arg(10000000);
-    // -> Arg(NUM_ORDERS);
+    -> Arg(10000000)
+    -> Arg(NUM_ORDERS);
 
 /**
 static void BM_MixedWorkload(benchmark::State &state) {
