@@ -125,45 +125,41 @@ BENCHMARK(BM_AddOrder_Latency)
 static void BM_RemoveOrder_VaryDepth(benchmark::State &state) {
     OrderBook order_book;
     MarketConfig cfg;
-    OrderGenerator order_generator(cfg);
+    OrderGenerator order_gen(cfg);
+    const size_t depth = state.range(0);
 
     std::vector<uint32_t> orders_to_remove;
-    orders_to_remove.reserve(state.range(0) / 3 + 1);
+    orders_to_remove.reserve(depth);
 
-    for (int i = 0; i < state.range(0); i++) {
-        Order new_order = order_generator.generate_order();
+    for (size_t i = 0; i < depth; i++) {
+        Order new_order = order_gen.generate_order();
+        if (new_order.side == Side::Buy) { new_order.price -= 500; }
+        else { new_order.price += 500; }
         order_book.add_order(new_order);
-
-        if (i % 3 == 0) {
-            orders_to_remove.push_back(new_order.get_order_id());
-        }
+        orders_to_remove.push_back(new_order.get_order_id());
     }
 
-    OrderBook order_book_backup = order_book;
+    std::mt19937 rng(67);
+    std::shuffle(orders_to_remove.begin(), orders_to_remove.end(), rng);
 
-    size_t orderIdx = 0;
+    const size_t half = depth / 2;
 
     for (auto _ : state) {
-        if (orderIdx >= orders_to_remove.size() - 1) {
-            state.PauseTiming();
-            orderIdx = 0;
-            order_book = order_book_backup;
-            state.ResumeTiming();
+        for (size_t i = 0; i < half; i++) {
+            auto result = order_book.remove_order(orders_to_remove[i]);
+            benchmark::DoNotOptimize(result);
         }
-        order_book.remove_order(orders_to_remove[orderIdx]);
-
-        orderIdx++;
     }
-    state.SetItemsProcessed(state.iterations());
+
+    state.SetItemsProcessed(half);
 }
 
 BENCHMARK(BM_RemoveOrder_VaryDepth)
--> Arg(0)
--> Arg(1000)
--> Arg(10000)
--> Arg(100000)
--> Arg(1000000)
--> Arg(15000000);
+-> Arg(1000) -> Iterations(1)
+-> Arg(10000) -> Iterations(1)
+-> Arg(100000) -> Iterations(1)
+-> Arg(1000000) -> Iterations(1)
+-> Arg(15000000) -> Iterations(1);
 
 static void BM_MixedWorkload(benchmark::State &state) {
     OrderBook order_book;

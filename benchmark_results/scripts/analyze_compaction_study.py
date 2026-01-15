@@ -229,7 +229,7 @@ def print_summary(data):
 if __name__ == "__main__":
     # Configuration - paths relative to project root
     results_file = "benchmark_results/results/compaction_ratios_run2"
-    output_dir = "benchmark_results/results"
+    output_dir = "benchmark_results/results/run_2"
 
     print("Compaction Ratio Performance Analysis")
     print("=" * 60)
