@@ -161,71 +161,65 @@ BENCHMARK(BM_RemoveOrder_VaryDepth)
 -> Arg(1000000) -> Iterations(1)
 -> Arg(15000000) -> Iterations(1);
 
-static void BM_MixedWorkload(benchmark::State &state) {
+static void BM_MatchingPerformance(benchmark::State &state) {
     OrderBook order_book;
     MarketConfig cfg;
     OrderGenerator order_gen(cfg);
     const size_t num_orders = 10000000;
 
-    std::vector<Order> orders_to_add;
-    orders_to_add.reserve(num_orders);
+    std::vector<Order> orders_to_match;
+    orders_to_match.reserve(num_orders);
 
-    std::vector<uint32_t> orders_to_remove;
-    orders_to_remove.reserve(num_orders);
-
-    std::vector<bool> should_cancel_vec;
-    should_cancel_vec.reserve(num_orders);
-
-    for (size_t i = 0; i < num_orders; i++) { // Order Stream
+    for (size_t i = 0; i < num_orders; i++) {
         Order new_order = order_gen.generate_order();
-
-        if (new_order.side == Side::Buy) {new_order.price -= 100;}
-        else {new_order.price += 100;}
-
-        orders_to_add.push_back(new_order);
+        orders_to_match.push_back(new_order);
     }
 
-    for (size_t i = 0; i < state.range(0); i++) { // Prepopulating Orderbook
+    std::vector<size_t> random_indices;
+    random_indices.reserve(num_orders);
+
+    for (size_t i = 0; i < num_orders; i++) {
+        random_indices.push_back(i);
+    }
+
+    std::mt19937 rng(67);
+    std::shuffle(random_indices.begin(), random_indices.end(), rng);
+
+    for (size_t i = 0; i < state.range(0); i++) {
         Order new_order = order_gen.generate_order();
-
-        if (new_order.side == Side::Buy) {new_order.price -= 100;}
-        else {new_order.price += 100;}
-
+        if (new_order.side == Side::Buy) {new_order.price += 50;}
+        else {new_order.price -= 50;}
         order_book.add_order(new_order);
     }
 
-    for (size_t i = 0; i < num_orders; i++) {
-        should_cancel_vec.push_back(order_gen.should_cancel());
-    }
-
-    OrderBook backup_order_book = order_book;
     size_t orderIdx = 0;
 
     for (auto _ : state) {
-        if (orderIdx == num_orders - 1) {
+        if (orderIdx >= num_orders) {
             state.PauseTiming();
             orderIdx = 0;
-            order_book = backup_order_book;
+            OrderBook order_book = OrderBook();
+
+            for (size_t i = 0; i < state.range(0); i++) {
+                Order new_order = order_gen.generate_order();
+                if (new_order.side == Side::Buy) {new_order.price += 50;}
+                else {new_order.price -= 50;}
+                order_book.add_order(new_order);
+            }
+
             state.ResumeTiming();
         }
 
-        Order &new_order = orders_to_add[orderIdx];
-        order_book.add_order(new_order);
+        Order &new_order = orders_to_match[random_indices[orderIdx]];
+        auto trade = order_book.add_order(new_order);
+        benchmark::DoNotOptimize(trade);
 
-        if (new_order.quantity > 0) {
-            orders_to_remove.push_back(new_order.get_order_id());
-        }
-
-        if (should_cancel_vec[orderIdx] && !orders_to_remove.empty()) {
-            size_t removal_index =  orders_to_remove.size() > 100 ? orders_to_remove.size() - 100 : 0;
-            order_book.remove_order(orders_to_remove[removal_index]);
-        }
         orderIdx++;
     }
     state.SetItemsProcessed(state.iterations());
 }
 
-BENCHMARK(BM_MixedWorkload)
+BENCHMARK(BM_MatchingPerformance)
 -> Arg(0)
 -> Arg(1000)
 -> Arg(10000)
