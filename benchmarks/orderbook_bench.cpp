@@ -1,5 +1,6 @@
 #include <benchmark/benchmark.h>
 #include <chrono>
+#include <iostream>
 
 #include "order_generator.hpp"
 #include "../include/orderbook.hpp"
@@ -13,20 +14,35 @@ static void BM_AddOrder_No_Match(benchmark::State &state) {
     std::vector<Order> orders_to_add;
     orders_to_add.reserve(num_orders);
 
+    std::vector<size_t> order_indices;
+    order_indices.reserve(num_orders);
+
     for (size_t i = 0; i < num_orders; i++) {
-        orders_to_add.push_back(order_gen.generate_order());
-    } // order buffer to hold orders to be added to prevent order generation from being tested
+        Order new_order = order_gen.generate_order();
+        if (new_order.side == Side::Buy) {new_order.price -= 500;}
+        else {new_order.price += 500;}
+        orders_to_add.push_back(new_order);
+    }
 
     for (int i = 0; i < state.range(0); i++) {
         Order new_order = order_gen.generate_order();
+        if (new_order.side == Side::Buy) {new_order.price -= 500;}
+        else {new_order.price += 500;}
         order_book.add_order(new_order);
-    } // prepopulate orderbook for cold start and various hot starts
-    // doesn't use any pregenerated orders in orders_to_add to maximize cache miss rate for accurate testing
+    }
+
+    for (size_t i = 0; i < num_orders; i++) {
+        order_indices.push_back(i);
+    }
+
+    std::mt19937 rng(67);
+    shuffle(order_indices.begin(), order_indices.end(), rng);
 
     size_t order_idx = 0;
 
     for (auto _ : state) {
-        auto trade = order_book.add_order(orders_to_add[order_idx]);
+        auto trade = order_book.add_order(orders_to_add[order_indices[order_idx]]);
+
         benchmark::DoNotOptimize(trade);
         order_idx = (order_idx + 1) % num_orders;
     }
@@ -51,21 +67,35 @@ static void BM_AddOrder_Latency(benchmark::State &state) {
     latencies.reserve(num_orders);
     std::vector<Order> orders_to_add;
     orders_to_add.reserve(num_orders);
+    std::vector<size_t> order_indices;
+    order_indices.reserve(num_orders);
 
     for (size_t i = 0; i < num_orders; i++) {
-        orders_to_add.push_back(order_gen.generate_order());
+        Order new_order = order_gen.generate_order();
+        if (new_order.side == Side::Buy) {new_order.price -= 500;}
+        else {new_order.price += 500;}
+        orders_to_add.push_back(new_order);
     }
 
     for (int i = 0; i < state.range(0); i++) {
         Order new_order = order_gen.generate_order();
+        if (new_order.side == Side::Buy) {new_order.price -= 500;}
+        else {new_order.price += 500;}
         order_book.add_order(new_order);
     }
 
     size_t order_idx = 0;
 
+    for (size_t i = 0; i < num_orders; i++) {
+        order_indices.push_back(i);
+    }
+
+    std::mt19937 rng(67);
+    shuffle(order_indices.begin(), order_indices.end(), rng);
+
     for (auto _ : state) {
         auto start = std::chrono::high_resolution_clock::now();
-        auto trade = order_book.add_order(orders_to_add[order_idx]);
+        auto trade = order_book.add_order(orders_to_add[order_indices[order_idx]]);
         auto end = std::chrono::high_resolution_clock::now();
 
         double dur = std::chrono::duration<double, std::nano>(end - start).count();
@@ -75,9 +105,10 @@ static void BM_AddOrder_Latency(benchmark::State &state) {
     }
 
     std::sort(latencies.begin(), latencies.end());
-    state.counters["p999"] = latencies[latencies.size() * .999];
-    state.counters["p99"] = latencies[latencies.size() * .99];
-    state.counters["p50"] = latencies[latencies.size() * .50];
+    state.counters["p999"] = latencies[static_cast<size_t>(latencies.size() * 0.999)];
+    state.counters["p99"] = latencies[static_cast<size_t>(latencies.size() * 0.99)];
+    state.counters["p50"] = latencies[static_cast<size_t>(latencies.size() * 0.50)];
+
 
     state.SetItemsProcessed(state.iterations());
 }
