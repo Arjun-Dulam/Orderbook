@@ -1,17 +1,17 @@
-#!/bin/bash
-set -e  # Exit on error
+set -e
 
-# Configuration
 RATIOS=(0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95)
-OUTPUT_FILE="../results/compaction_ratios_run2"
-CPP_FILE="../../src/orderbook.cpp"
-BUILD_DIR="../../build"
+OUTPUT_FILE="benchmark_results/results/compaction_ratios_run2"
+CPP_FILE="src/orderbook.cpp"
+BUILD_DIR="build"
+
+# Create output directory if it doesn't exist
+mkdir -p "$(dirname "$OUTPUT_FILE")"
 
 echo "Starting Compaction Study - $(date)" > "$OUTPUT_FILE"
 echo "Testing ratios: ${RATIOS[@]}" | tee -a "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
-# Save original ratio for restoration
 ORIGINAL_RATIO=$(grep "#define COMPACTION_RATIO" "$CPP_FILE" | awk '{print $3}')
 
 for RATIO in "${RATIOS[@]}"
