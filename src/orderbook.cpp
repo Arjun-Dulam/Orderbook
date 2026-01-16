@@ -78,6 +78,8 @@ void OrderBook::init_trades_with_order(Order &order, std::vector<Trade> *execute
             (order.side == Side::Sell) ? order.order_id : existing_order->order_id
         };
 
+        next_trade_id++;
+
         order.quantity -= new_trade.quantity;
         existing_order->quantity -= new_trade.quantity;
         if (existing_order->quantity == 0) {
