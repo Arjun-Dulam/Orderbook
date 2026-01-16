@@ -1,0 +1,22 @@
+Starting Compaction Study - Fri Jan 16 02:33:28 EST 2026
+Testing ratios: 0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95
+
+========================================
+Testing Compaction Ratio: 0.15
+========================================
+Rebuilding...
+Running benchmarks...
+2026-01-16T02:33:54-05:00
+Running build/OrderBookBenchmark
+Run on (8 X 1400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB
+  L1 Instruction 32 KiB
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB
+Load Average: 14.75, 6.50, 4.23
+---------------------------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations UserCounters...
+---------------------------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0                                394 ns          387 ns      1904327 items_per_second=2.58529M/s
+BM_AddOrder_No_Match/1000                             323 ns          319 ns      2289078 items_per_second=3.13043M/s
