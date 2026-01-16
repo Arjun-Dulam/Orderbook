@@ -5,7 +5,6 @@ project(StockExchange VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Default to Release if not specified, but don't force it
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 endif()
@@ -40,13 +39,10 @@ add_executable(OrderBookBenchmark ${BENCH_SOURCE})
 
 target_link_libraries(OrderBookBenchmark benchmark::benchmark)
 
-# Benchmarks: Full optimization for realistic performance measurement
 target_compile_options(OrderBookBenchmark PRIVATE -O3 -march=native -DNDEBUG -flto)
 target_link_options(OrderBookBenchmark PRIVATE -flto)
 
-#target_include_directories(OrderBookBenchmark PRIVATE ${benchmark_SOURCE_DIR}/include)
 
-# Unit Tests
 set(TEST_SOURCE
     tests/test.cpp
     src/orderbook.cpp
@@ -57,7 +53,6 @@ add_executable(OrderBookTests ${TEST_SOURCE})
 target_link_libraries(OrderBookTests GTest::gtest_main)
 target_include_directories(OrderBookTests PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
-# Tests: Debug mode with sanitizers for catching bugs
 target_compile_options(OrderBookTests PRIVATE -g -O0 -fsanitize=address -fsanitize=undefined)
 target_link_options(OrderBookTests PRIVATE -fsanitize=address -fsanitize=undefined)
 
