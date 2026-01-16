@@ -1,12 +1,10 @@
-# Stock Exchange Orderbook
+# Orderbook
 
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/)
 [![CMake](https://img.shields.io/badge/CMake-3.21+-green.svg)](https://cmake.org/)
-[![Performance](https://img.shields.io/badge/Throughput-3.4M%20orders%2Fs-orange.svg)](#performance)
+[![Performance](https://img.shields.io/badge/Throughput-2.22M%20orders%2Fs-orange.svg)](#performance)
 
-A high-performance limit order matching engine achieving **3.4 million orders per second**. Built as a deep dive into low-latency systems engineering, this project demonstrates the impact of data structure selection, memory access patterns, and compiler optimizations on real-world performance.
-
-The journey from initial implementation to production-ready performance involved a **1,000x improvement** (3K → 3.4M ops/sec) through systematic profiling and optimization.
+A high-performance limit order matching engine achieving **2.22 million orders per second**.
 
 ---
 
@@ -16,7 +14,8 @@ The journey from initial implementation to production-ready performance involved
 - [Performance](#performance)
 - [Building & Running](#building--running)
 - [Project Structure](#project-structure)
-- [Future Work](#future-work)
+- [Technologies Used](#technologies-used)
+- [Contact Me](#contact-me)
 
 ---
 
@@ -102,15 +101,13 @@ This trades memory for latency—deleted orders occupy space temporarily but avo
 
 ### Benchmark Results
 
-> **Note:** Fill in your specific benchmark results below after running `./build/OrderBookBenchmark`
-
 | Metric | Value | Notes |
 |--------|-------|-------|
-| **Throughput (no match)** | `___` M orders/sec | Pure insertion, no matching |
-| **Throughput (with matching)** | `___` M orders/sec | Realistic mixed workload |
-| **P50 Latency** | `___` ns | Median per-order latency |
-| **P99 Latency** | `___` ns | Tail latency |
-| **P999 Latency** | `___` ns | Extreme tail |
+| **Throughput (no match)** | 3.37M orders/sec | Pure insertion, no matching (at 15M depth) |
+| **Throughput (with matching)** | 2.22M orders/sec | Realistic mixed workload (at 15M depth) |
+| **P50 Latency** | 251 ns | Median per-order latency (at 15M depth) |
+| **P99 Latency** | 739 ns | Tail latency (at 15M depth) |
+| **P999 Latency** | 3.41 µs | Extreme tail (at 15M depth) |
 | **Max Tested Depth** | 15M orders | Orderbook size during benchmarks |
 
 ### Benchmark Suite
@@ -122,49 +119,19 @@ Four benchmarks measure different aspects of performance:
 3. **BM_RemoveOrder_VaryDepth** — Cancellation performance at various depths
 4. **BM_MatchingPerformance** — Realistic trading simulation with order overlap
 
-### Optimization Journey
-
-The 1,000x performance improvement came from three key optimizations:
-
-| Optimization | Impact | Before → After |
-|--------------|--------|----------------|
-| **Compiler flags** | ~100x | Debug → `-O3 -march=native -flto` |
-| **O(1) order lookup** | ~10x | Linear scan → Hash map |
-| **Pass-by-reference** | ~2x | Copy semantics → Reference semantics |
-
-**Critical insight:** The initial 12M ops/sec measurement was *too optimistic*—it didn't account for compaction overhead in realistic workloads. Refined benchmarking with proper statistical validation yielded the accurate 3.4M figure.
-
-### Compiler Flags
-
-Performance is extremely sensitive to optimization flags:
-
-```cmake
-# Production (benchmarks)
--O3 -march=native -DNDEBUG -flto
-
-# Debug (tests with sanitizers)
--g -O0 -fsanitize=address -fsanitize=undefined
-```
-
-Running without `-O3` results in **100x+ slowdown**.
-
 ---
 
 ## Building & Running
 
 ### Requirements
 
-- C++20 compiler (GCC 10+, Clang 10+, Apple Clang 12+)
+- C++20 compiler
 - CMake 3.21+
-- Git (for fetching dependencies)
 
 ### Build
 
 ```bash
-# Configure
 cmake -B build
-
-# Compile
 cmake --build build
 ```
 
@@ -176,15 +143,17 @@ cmake --build build
 
 Example output:
 ```
------------------------------------------------------------------
-Benchmark                       Time             CPU   Iterations
------------------------------------------------------------------
-BM_AddOrder_No_Match/0       294 ns          294 ns      2384021
-BM_AddOrder_No_Match/1000    301 ns          301 ns      2325581
-...
+-----------------------------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations   UserCounters
+-----------------------------------------------------------------------------------------
+BM_AddOrder_No_Match/0       294 ns          294 ns      2384021    items_per_second=3.676767M/s
+BM_AddOrder_No_Match/1000    301 ns          301 ns      2325581    items_per_second=3.676767M/s
+           |                    |               |           |                        |                   
+           |                    |               |           |                        |                   
+           |                    |               |           |                        |                   
 ```
 
-### Run Tests
+### Run Unit Tests
 
 ```bash
 ./build/OrderBookTests
@@ -219,31 +188,27 @@ Stock Exchange/
 └── CMakeLists.txt          # Build configuration
 ```
 
-### Key Files
-
-| File | Description |
-|------|-------------|
-| `orderbook.cpp` | Core matching algorithm (~150 lines of critical path) |
-| `orderbook_bench.cpp` | Four benchmarks with statistical validation |
-| `order_generator.cpp` | Realistic order generation with configurable distributions |
-
 ---
 
 ## Future Work
 
 Potential enhancements for production use:
 
-- **Thread Safety** — Lock-free data structures or fine-grained locking for concurrent access
+- **Multithreading** - Synchronize across multiple orderbooks for different symbols.
 - **Memory Pooling** — Custom allocators to reduce allocation overhead and improve cache behavior
-- **Advanced Order Types** — Iceberg orders, stop-loss, fill-or-kill, immediate-or-cancel
-- **Network Layer** — FIX protocol integration, WebSocket API for real-time updates
-- **Persistence** — Write-ahead logging for crash recovery
-- **Monitoring** — Latency histograms, throughput metrics, alerting integration
+- **Advanced Order Types** — Market Orders, Stop-Loss/Stop-Limit
+- **Network Layer** — gRPC for order submission over network.
 
 ---
 
-## Acknowledgments
+## Technologies Used
 
 Built with:
 - [Google Benchmark](https://github.com/google/benchmark) — Microbenchmarking framework
 - [Google Test](https://github.com/google/googletest) — Unit testing framework
+
+## Contact Me
+
+Have any suggestions, critiques, or improvements? Please reach out!
+
+Email: [adulam3@gatech.edu](mailto:adulam3@gatech.edu) 
