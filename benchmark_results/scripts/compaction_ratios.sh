@@ -4,7 +4,7 @@ RATIOS=(0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95)
 OUTPUT_FILE="benchmark_results/results/compaction_ratios_run2"
 CPP_FILE="src/orderbook.cpp"
 BUILD_DIR="build"
-
+# TODO: Mention this in the readme
 # Create output directory if it doesn't exist
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
