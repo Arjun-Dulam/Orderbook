@@ -26,11 +26,6 @@ uint32_t OrderGenerator::generate_quantity() {
     double inner = ((max_pow - min_pow) * uniform_dist(rng) + min_pow);
 
     return static_cast<uint32_t>(pow(inner, 1 / config.power_law_alpha));
-    
-    /**
-     * TODO: This sucks ass. Calling pow() too much. Optimize by precomputing, then computing again
-     * only when config changes. Good enough for now.
-    */
 }
 
 Side OrderGenerator::generate_side() {
