@@ -107,6 +107,7 @@ static void BM_AddOrder_Latency(benchmark::State &state) {
     std::sort(latencies.begin(), latencies.end());
     state.counters["p999"] = latencies[static_cast<size_t>(latencies.size() * 0.999)];
     state.counters["p99"] = latencies[static_cast<size_t>(latencies.size() * 0.99)];
+    state.counters["p95"] = latencies[static_cast<size_t>(latencies.size() * 0.95)];
     state.counters["p50"] = latencies[static_cast<size_t>(latencies.size() * 0.50)];
 
 
@@ -220,6 +221,82 @@ static void BM_MatchingPerformance(benchmark::State &state) {
 }
 
 BENCHMARK(BM_MatchingPerformance)
+-> Arg(0)
+-> Arg(1000)
+-> Arg(10000)
+-> Arg(100000)
+-> Arg(1000000)
+-> Arg(15000000);
+
+static void BM_MatchingLatency(benchmark::State &state) {
+    OrderBook order_book;
+    MarketConfig cfg;
+    OrderGenerator order_gen(cfg);
+    const size_t num_orders = 10000000;
+
+    std::vector<double> latencies;
+    latencies.reserve(num_orders);
+    std::vector<Order> orders_to_match;
+    orders_to_match.reserve(num_orders);
+    std::vector<size_t> random_indices;
+    random_indices.reserve(num_orders);
+
+    for (size_t i = 0; i < num_orders; i++) {
+        Order new_order = order_gen.generate_order();
+        orders_to_match.push_back(new_order);
+        random_indices.push_back(i);
+    }
+
+    std::mt19937 rng(67);
+    std::shuffle(random_indices.begin(), random_indices.end(), rng);
+
+    for (size_t i = 0; i < state.range(0); i++) {
+        Order new_order = order_gen.generate_order();
+        if (new_order.side == Side::Buy) {new_order.price += 50;}
+        else {new_order.price -= 50;}
+        order_book.add_order(new_order);
+    }
+
+    size_t orderIdx = 0;
+
+    for (auto _ : state) {
+        if (orderIdx >= num_orders) {
+            state.PauseTiming();
+            orderIdx = 0;
+            order_book = OrderBook();
+
+            for (size_t i = 0; i < state.range(0); i++) {
+                Order new_order = order_gen.generate_order();
+                if (new_order.side == Side::Buy) {new_order.price += 50;}
+                else {new_order.price -= 50;}
+                order_book.add_order(new_order);
+            }
+
+            state.ResumeTiming();
+        }
+
+        Order &new_order = orders_to_match[random_indices[orderIdx]];
+        auto start = std::chrono::high_resolution_clock::now();
+        auto trade = order_book.add_order(new_order);
+        auto end = std::chrono::high_resolution_clock::now();
+
+        double dur = std::chrono::duration<double, std::nano>(end - start).count();
+        latencies.push_back(dur);
+        benchmark::DoNotOptimize(trade);
+
+        orderIdx++;
+    }
+
+    std::sort(latencies.begin(), latencies.end());
+    state.counters["p999"] = latencies[static_cast<size_t>(latencies.size() * 0.999)];
+    state.counters["p99"] = latencies[static_cast<size_t>(latencies.size() * 0.99)];
+    state.counters["p95"] = latencies[static_cast<size_t>(latencies.size() * 0.95)];
+    state.counters["p50"] = latencies[static_cast<size_t>(latencies.size() * 0.50)];
+
+    state.SetItemsProcessed(state.iterations());
+}
+
+BENCHMARK(BM_MatchingLatency)
 -> Arg(0)
 -> Arg(1000)
 -> Arg(10000)
