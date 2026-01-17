@@ -192,8 +192,6 @@ Stock Exchange/
 
 ## Future Work
 
-Potential enhancements for production use:
-
 - **Multithreading** - Synchronize across multiple orderbooks for different symbols.
 - **Memory Pooling** — Custom allocators to reduce allocation overhead and improve cache behavior
 - **Advanced Order Types** — Market Orders, Stop-Loss/Stop-Limit
