@@ -2,7 +2,6 @@
 
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/)
 [![CMake](https://img.shields.io/badge/CMake-3.21+-green.svg)](https://cmake.org/)
-[![Performance](https://img.shields.io/badge/Throughput-2.22M%20orders%2Fs-orange.svg)](#performance)
 
 A high-performance limit order matching engine achieving **2.22 million orders per second**.
 
