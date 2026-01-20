@@ -48,7 +48,7 @@ The orderbook uses a three-tier indexing strategy optimized for different access
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | **Price-level container** | `std::map` | Automatic ordering for best-price iteration; O(log n) is acceptable given typical spread |
-| **Orders at price level** | `std::vector` | Cache locality dominates; contiguous memory means CPU prefetching works. Lists scatter nodes across heap = cache miss on every traversal |
+| **Orders at price level** | `std::vector` | Cache locality dominates; contiguous memory means CPU prefetching works.|
 | **Order lookup** | `std::unordered_map` | Transforms O(n) cancellation scan into O(1) hash lookup |
 | **Deletion strategy** | Lazy deletion + compaction | Defers expensive vector reorganization; amortizes cost across many operations |
 
@@ -63,7 +63,7 @@ while (incoming_order.quantity > 0) {
     auto best_price = (is_buy) ? asks.begin() : prev(bids.end());
 
     // 2. Check price compatibility
-    if (!prices_cross(incoming_order.price, best_price)) break;
+    if (!prices_compatible(incoming_order.price, best_price)) break;
 
     // 3. Match against orders at this level (FIFO)
     for (auto& resting_order : orders_at_price) {
@@ -85,7 +85,7 @@ while (incoming_order.quantity > 0) {
 Rather than immediately removing filled/cancelled orders (expensive vector reorganization), orders are marked `deleted_or_filled` and cleaned up in batches:
 
 ```cpp
-#define COMPACTION_RATIO 0.35  // Trigger when 35% of orders are deleted
+#define COMPACTION_RATIO 0.75  // Trigger when 75% of orders are deleted
 
 void compact_orderbook() {
     // Uses std::remove_if to batch-remove deleted orders
