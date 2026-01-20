@@ -14,6 +14,7 @@ A high-performance limit order matching engine achieving **2.22 million orders p
 - [Performance](#performance)
 - [Building & Running](#building--running)
 - [Project Structure](#project-structure)
+- [Future Work](#future-work)
 - [Technologies Used](#technologies-used)
 - [Contact Me](#contact-me)
 
