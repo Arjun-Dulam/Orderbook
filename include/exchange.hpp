@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <vector>
 #include <memory>
@@ -10,7 +10,7 @@
 class Exchange {
 private:
     std::unordered_map<std::string, std::unique_ptr<OrderBook>> books;
-    std::mutex books_mutex_;
+    std::shared_mutex books_mutex_;
 
 public:
     Exchange();
