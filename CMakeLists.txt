@@ -55,7 +55,8 @@ add_executable(ExchangeBenchmark
     ${EXCHANGE_SOURCES}
 )
 target_link_libraries(ExchangeBenchmark benchmark::benchmark Threads::Threads)
-target_compile_options(ExchangeBenchmark PRIVATE -O3 -march=native -DNDEBUG)
+target_compile_options(ExchangeBenchmark PRIVATE -O3 -march=native -DNDEBUG -flto)
+target_link_options(ExchangeBenchmark PRIVATE -flto)
 
 add_executable(OrderBookTests
     tests/test.cpp
