@@ -1,6 +1,7 @@
 #include <benchmark/benchmark.h>
 #include <chrono>
 #include <iostream>
+#include <memory>
 
 #include "order_generator.hpp"
 #include "../include/orderbook.hpp"
@@ -229,7 +230,7 @@ BENCHMARK(BM_MatchingPerformance)
 -> Arg(15000000);
 
 static void BM_MatchingLatency(benchmark::State &state) {
-    OrderBook order_book;
+    auto order_book = std::make_unique<OrderBook>();
     MarketConfig cfg;
     OrderGenerator order_gen(cfg);
     const size_t num_orders = 10000000;
@@ -254,7 +255,7 @@ static void BM_MatchingLatency(benchmark::State &state) {
         Order new_order = order_gen.generate_order();
         if (new_order.side == Side::Buy) {new_order.price += 50;}
         else {new_order.price -= 50;}
-        order_book.add_order(new_order);
+        order_book->add_order(new_order);
     }
 
     size_t orderIdx = 0;
@@ -263,13 +264,13 @@ static void BM_MatchingLatency(benchmark::State &state) {
         if (orderIdx >= num_orders) {
             state.PauseTiming();
             orderIdx = 0;
-            order_book = OrderBook();
+            order_book = std::make_unique<OrderBook>();
 
             for (size_t i = 0; i < state.range(0); i++) {
                 Order new_order = order_gen.generate_order();
                 if (new_order.side == Side::Buy) {new_order.price += 50;}
                 else {new_order.price -= 50;}
-                order_book.add_order(new_order);
+                order_book->add_order(new_order);
             }
 
             state.ResumeTiming();
@@ -277,7 +278,7 @@ static void BM_MatchingLatency(benchmark::State &state) {
 
         Order &new_order = orders_to_match[random_indices[orderIdx]];
         auto start = std::chrono::high_resolution_clock::now();
-        auto trade = order_book.add_order(new_order);
+        auto trade = order_book->add_order(new_order);
         auto end = std::chrono::high_resolution_clock::now();
 
         double dur = std::chrono::duration<double, std::nano>(end - start).count();

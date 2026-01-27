@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <cstdint>
 #include <cstddef>
+#include <mutex>
 
 #include "order.hpp"
 
@@ -26,6 +27,7 @@ private:
     uint32_t next_order_id;
     size_t deleted_orders_count = 0;
     size_t total_orders_count = 0;
+    std::mutex mutex_;
 
     /**
      * @brief Executes possible trades given the addition of a new order. Modifies executed_trades in place.
