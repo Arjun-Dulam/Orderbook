@@ -58,3 +58,12 @@ target_link_options(OrderBookTests PRIVATE -fsanitize=address -fsanitize=undefin
 
 enable_testing()
 add_test(NAME OrderBookTests COMMAND OrderBookTests)
+
+SET(UNIVERSAL_SOURCE
+        src/*
+        include/*
+)
+
+add_executable(OrderBookUniversal ${TEST_SOURCE})
+
+
