@@ -64,6 +64,6 @@ SET(UNIVERSAL_SOURCE
         include/*
 )
 
-add_executable(OrderBookUniversal ${TEST_SOURCE})
+add_executable(OrderBookUniversal ${UNIVERSAL_SOURCE})
 
 
