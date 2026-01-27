@@ -60,9 +60,14 @@ enable_testing()
 add_test(NAME OrderBookTests COMMAND OrderBookTests)
 
 SET(UNIVERSAL_SOURCE
-        src/*
-        include/*
+        src/order.cpp
+        src/orderbook.cpp
+        src/exchange.cpp
+        include/order.hpp
+        include/orderbook.hpp
+        include/exchange.hpp
 )
+
 
 add_executable(OrderBookUniversal ${UNIVERSAL_SOURCE})
 

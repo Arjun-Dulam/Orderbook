@@ -20,11 +20,11 @@ std::vector<Trade> Exchange::add_order(std::string &symbol, Order &order) {
 }
 
 bool Exchange::remove_order(std::string &symbol, uint32_t order_id) {
-    Orderbook *book = nullptr;
+    OrderBook *book = nullptr;
     {
         std::lock_guard<std::mutex> lock(books_mutex_);
         book = books[symbol].get();
     }
 
-    book.remove_order(order_id);
+    return book->remove_order(order_id);
 }
