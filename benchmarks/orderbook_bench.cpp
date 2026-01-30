@@ -167,7 +167,7 @@ static void BM_MatchingPerformance(benchmark::State &state) {
     OrderBook order_book;
     MarketConfig cfg;
     OrderGenerator order_gen(cfg);
-    const size_t num_orders = 10000000;
+    const size_t num_orders = 15000000;
 
     std::vector<Order> orders_to_match;
     orders_to_match.reserve(num_orders);
@@ -227,13 +227,15 @@ BENCHMARK(BM_MatchingPerformance)
 -> Arg(10000)
 -> Arg(100000)
 -> Arg(1000000)
--> Arg(15000000);
+-> Arg(15000000)
+-> Arg(25000000);
+
 
 static void BM_MatchingLatency(benchmark::State &state) {
     auto order_book = std::make_unique<OrderBook>();
     MarketConfig cfg;
     OrderGenerator order_gen(cfg);
-    const size_t num_orders = 10000000;
+    const size_t num_orders = 15000000;
 
     std::vector<double> latencies;
     latencies.reserve(num_orders);
@@ -303,6 +305,8 @@ BENCHMARK(BM_MatchingLatency)
 -> Arg(10000)
 -> Arg(100000)
 -> Arg(1000000)
--> Arg(15000000);
+-> Arg(15000000)
+-> Arg(25000000);
+
 
 BENCHMARK_MAIN();

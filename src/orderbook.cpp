@@ -1,10 +1,11 @@
 #include "../include/orderbook.hpp"
-#define COMPACTION_RATIO 0.75
+#define COMPACTION_RATIO 0.15
 
 OrderBook::OrderBook() {
     next_timestamp = 0;
     next_trade_id = 0;
     next_order_id = 0;
+    order_lookup.reserve(15000000);
 }
 
 std::vector<Trade> OrderBook::add_order(Order &new_order) {
