@@ -42,15 +42,6 @@ The orderbook uses a three-tier indexing strategy optimized for different access
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-### Design Decisions
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| **Price-level container** | `std::map` | Automatic ordering for best-price iteration; O(log n) is acceptable given typical spread |
-| **Orders at price level** | `std::vector` | Cache locality dominates; contiguous memory means CPU prefetching works.|
-| **Order lookup** | `std::unordered_map` | Transforms O(n) cancellation scan into O(1) hash lookup |
-| **Deletion strategy** | Lazy deletion + compaction | Defers expensive vector reorganization; amortizes cost across many operations |
-
 ### Matching Algorithm
 
 The engine implements **price-time priority** (standard FIFO matching):
