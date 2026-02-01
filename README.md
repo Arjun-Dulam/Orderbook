@@ -3,7 +3,7 @@
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://isocpp.org/)
 [![CMake](https://img.shields.io/badge/CMake-3.21+-green.svg)](https://cmake.org/)
 
-A high-performance limit order matching engine achieving **2.22 million orders per second**.
+A high-performance limit order matching engine achieving **2.78 million orders per second** with matching.
 
 ---
 
@@ -92,23 +92,21 @@ This trades memory for latency—deleted orders occupy space temporarily but avo
 
 ### Benchmark Results
 
-| Metric | Value | Notes |
-|--------|-------|-------|
-| **Throughput (no match)** | 3.37M orders/sec | Pure insertion, no matching (at 15M depth) |
-| **Throughput (with matching)** | 2.22M orders/sec | Realistic mixed workload (at 15M depth) |
-| **P50 Latency** | 251 ns | Median per-order latency (at 15M depth) |
-| **P99 Latency** | 739 ns | Tail latency (at 15M depth) |
-| **P999 Latency** | 3.41 µs | Extreme tail (at 15M depth) |
-| **Max Tested Depth** | 15M orders | Orderbook size during benchmarks |
+| Metric | Value            |
+|--------|------------------|
+| **Throughput (with matching)** | 2.78M orders/sec |
+| **P50 Latency** | 303 ns           |
+| **P99 Latency** | 1.14 µs          | 
 
 ### Benchmark Suite
 
-Four benchmarks measure different aspects of performance:
+Five benchmarks measure different aspects of performance:
 
 1. **BM_AddOrder_No_Match** — Insertion throughput without matching
-2. **BM_AddOrder_Latency** — Per-order latency distribution (P50/P99/P999)
+2. **BM_AddOrder_Latency** — Per-order latency distribution
 3. **BM_RemoveOrder_VaryDepth** — Cancellation performance at various depths
-4. **BM_MatchingPerformance** — Realistic trading simulation with order overlap
+4. **BM_MatchingPerformance** — Realistic trading simulation throughput
+5. **BM_MatchingLatency** — Per-match latency distribution
 
 ---
 
@@ -162,7 +160,7 @@ BM_AddOrder_No_Match/1000    301 ns          301 ns      2325581    items_per_se
 ## Project Structure
 
 ```
-Stock Exchange/
+Orderbook/
 ├── include/
 │   ├── order.hpp           # Order, Trade classes, Side enum
 │   └── orderbook.hpp       # OrderBook interface
@@ -183,7 +181,7 @@ Stock Exchange/
 
 ## Future Work
 
-- **Multithreading** - Synchronize across multiple orderbooks for different symbols.
+- **Multithreading** — Synchronize across multiple orderbooks for different symbols.
 - **Memory Pooling** — Custom allocators to reduce allocation overhead and improve cache behavior
 - **Advanced Order Types** — Market Orders, Stop-Loss/Stop-Limit
 - **Network Layer** — gRPC for order submission over network.
